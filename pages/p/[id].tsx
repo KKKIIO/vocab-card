@@ -1,37 +1,48 @@
 import React from "react"
 import { GetServerSideProps } from "next"
-import ReactMarkdown from "react-markdown"
 import Layout from "../../components/Layout"
-import { PostProps } from "../../components/Post"
+import { WordProps } from "../../components/Word"
+import prisma from "../../lib/prisma"
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const post = {
-    id: "1",
-    title: "Prisma is the perfect ORM for Next.js",
-    content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-    published: false,
-    author: {
-      name: "Nikolas Burk",
-      email: "burk@prisma.io",
+  const word = await prisma.word.findUnique({
+    where: {
+      id: Number(params?.id),
     },
-  }
+    include: {
+      unfamiliarWord: true,
+      examples: true,
+    }
+  })
+
   return {
-    props: post,
+    props: {
+      ...word,
+      createdAt: word.createdAt.toISOString(),
+      updatedAt: word.updatedAt.toISOString(),
+      unfamiliarWord: (word.unfamiliarWord) && {
+        ...word.unfamiliarWord,
+        createdAt: word.unfamiliarWord.createdAt.toISOString(),
+        updatedAt: word.unfamiliarWord.updatedAt.toISOString(),
+      },
+      examples: word.examples.map((example) => ({
+        ...example,
+        createdAt: example.createdAt.toISOString(),
+        updatedAt: example.updatedAt.toISOString(),
+      })),
+    },
   }
 }
 
-const Post: React.FC<PostProps> = (props) => {
-  let title = props.title
-  if (!props.published) {
-    title = `${title} (Draft)`
-  }
-
+const Word: React.FC<WordProps> = (props) => {
+  let title = props.text
   return (
     <Layout>
       <div>
         <h2>{title}</h2>
-        <p>By {props?.author?.name || "Unknown author"}</p>
-        <ReactMarkdown children={props.content} />
+        <p>Add at {props.createdAt}</p>
+        <p>Meaning unfamiliar level: {props.unfamiliarWord?.meaningFamiliarLevel}</p>
+        <p>Pronunciation unfamiliar level: {props.unfamiliarWord?.pronunciationFamiliarLevel}</p>
       </div>
       <style jsx>{`
         .page {
@@ -58,4 +69,4 @@ const Post: React.FC<PostProps> = (props) => {
   )
 }
 
-export default Post
+export default Word

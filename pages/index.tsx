@@ -1,40 +1,46 @@
 import React from "react"
 import { GetStaticProps } from "next"
 import Layout from "../components/Layout"
-import Post, { PostProps } from "../components/Post"
+import UnfamiliarWord, { UnfamiliarWordProps } from "../components/UnfamiliarWord"
+import prisma from "../lib/prisma"
+import { UnfamiliarStatus } from "@prisma/client"
 
 export const getStaticProps: GetStaticProps = async () => {
-  const feed = [
-    {
-      id: "1",
-      title: "Prisma is the perfect ORM for Next.js",
-      content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-      published: false,
-      author: {
-        name: "Nikolas Burk",
-        email: "burk@prisma.io",
+  const unfamiliarWords = await prisma.unfamiliarWord.findMany({
+    where: { status: UnfamiliarStatus.Learning },
+    include: {
+      word: {
+        select: { text: true }
       },
     },
-  ]
-  return { 
-    props: { feed }, 
-    revalidate: 10 
+    orderBy: [{ createdAt: "desc" }]
+  })
+
+  return {
+    props: {
+      unfamiliarWords: unfamiliarWords.map((unfamiliarWord) => ({
+        ...unfamiliarWord,
+        createdAt: unfamiliarWord.createdAt.toISOString(),
+        updatedAt: unfamiliarWord.updatedAt.toISOString(),
+      }))
+    },
+    revalidate: 10
   }
 }
 
 type Props = {
-  feed: PostProps[]
+  unfamiliarWords: UnfamiliarWordProps[]
 }
 
 const Blog: React.FC<Props> = (props) => {
   return (
     <Layout>
       <div className="page">
-        <h1>Public Feed</h1>
+        <h1>Unfamiliar Words</h1>
         <main>
-          {props.feed.map((post) => (
-            <div key={post.id} className="post">
-              <Post post={post} />
+          {props.unfamiliarWords.map((unfamiliarWord) => (
+            <div key={unfamiliarWord.id} className="post">
+              <UnfamiliarWord unfamiliarWord={unfamiliarWord} />
             </div>
           ))}
         </main>
