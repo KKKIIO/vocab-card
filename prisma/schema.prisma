@@ -8,54 +8,57 @@ datasource db {
     url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
 }
 
+model Note {
+    id                 Int                  @id @default(autoincrement())
+    text               String
+    videoUrl           String?
+    pictureUrl         String?
+    lastReviewedAt     DateTime             @default(now())
+    createdAt          DateTime             @default(now())
+    updatedAt          DateTime             @updatedAt
+    wordMeaningExample WordMeaningExample[]
+}
+
 model Word {
-    id             Int             @id @default(autoincrement())
-    text           String          @unique
-    createdAt      DateTime        @default(now())
-    updatedAt      DateTime        @updatedAt
-    unfamiliarWord UnfamiliarWord?
-    examples       WordExample[]
+    id                 Int                 @id @default(autoincrement())
+    text               String              @unique
+    createdAt          DateTime            @default(now())
+    updatedAt          DateTime            @updatedAt
+    wordMeanings       WordMeaning[]
+    wordPronunciations WordPronunciation[]
 }
 
-model UnfamiliarWord {
-    id                         Int              @id @default(autoincrement())
-    word                       Word             @relation(fields: [wordId], references: [id])
-    wordId                     Int              @unique
-    meaningFamiliarLevel       Int
-    pronunciationFamiliarLevel Int
-    status                     UnfamiliarStatus
-    createdAt                  DateTime         @default(now())
-    updatedAt                  DateTime         @updatedAt
-
-    @@index([createdAt(sort: Desc)])
+model WordMeaning {
+    id                  Int                  @id @default(autoincrement())
+    wordId              Int
+    word                Word                 @relation(fields: [wordId], references: [id])
+    learnStatus         LearnStatus
+    createdAt           DateTime             @default(now())
+    updatedAt           DateTime             @updatedAt
+    wordMeaningExamples WordMeaningExample[]
 }
 
-enum UnfamiliarType {
-    Meaning
-    Pronunciation
+model WordPronunciation {
+    id          Int         @id @default(autoincrement())
+    alphabet    String
+    wordId      Int
+    word        Word        @relation(fields: [wordId], references: [id])
+    learnStatus LearnStatus
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
 }
 
-enum UnfamiliarStatus {
+enum LearnStatus {
     Learning
     Mastered
 }
 
-model Example {
-    id          Int           @id @default(autoincrement())
-    text        String
-    createdAt   DateTime      @default(now())
-    updatedAt   DateTime      @updatedAt
-    WordExample WordExample[]
-}
-
-model WordExample {
-    id        Int      @id @default(autoincrement())
-    word      Word     @relation(fields: [wordId], references: [id])
-    wordId    Int
-    example   Example  @relation(fields: [exampleId], references: [id])
-    exampleId Int
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@unique([wordId, exampleId])
+model WordMeaningExample {
+    id            Int         @id @default(autoincrement())
+    wordMeaningId Int
+    wordMeaning   WordMeaning @relation(fields: [wordMeaningId], references: [id])
+    noteId        Int
+    note          Note        @relation(fields: [noteId], references: [id])
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
 }
