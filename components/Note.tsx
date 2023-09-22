@@ -16,7 +16,7 @@ export default function Note({ note }: { note: NoteProps }) {
             {(note.pictureUrl ? <CardMedia component={"img"} image={note.pictureUrl} sx={{ height: 140 }} /> : null)}
             <CardContent>
                 {(highlightWordMode ?
-                    WordHighlighter(note)
+                    <WordHighlighter note={note} />
                     : <Typography variant="body1">{note.text}</Typography>)}
             </CardContent>
             <CardActions disableSpacing>
