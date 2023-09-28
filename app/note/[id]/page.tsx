@@ -1,6 +1,6 @@
 import prisma from "../../../lib/prisma";
 import Layout from "../../../components/Layout";
-import Note from "../../../components/Note";
+import Note from "./Note";
 
 export default async function Page({ params }: { params: { id: string } }) {
     const note = await prisma.note.findUnique({
