@@ -1,8 +1,12 @@
 "use client";
 import { Typography } from "@mui/material";
 import { useState } from "react";
-import { NoteProps } from "./Note";
 import ConnectWordDialog from "./ConnectWordDialog";
+export type NoteProps = {
+  id: number;
+  text: string;
+  pictureUrl: string | null;
+};
 
 function splitByWords(
   text: string
@@ -32,7 +36,6 @@ export default function WordHighlighter({ note }: { note: NoteProps }) {
     setLastInterest({ word, open: true });
   };
   const handleClose = () => {
-    console.log("close");
     setLastInterest({ ...lastInterest, open: false });
   };
   return (
