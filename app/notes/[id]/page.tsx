@@ -1,6 +1,14 @@
-import prisma from "../../../lib/prisma";
-import { Card, CardActions, CardContent, CardMedia } from "@mui/material";
-import WordHighlighter from "./WordHighlighter";
+import prisma from "lib/prisma";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Stack,
+} from "@mui/material";
+import NoteText from "./text";
+import { Word } from "./word";
+import { Panels } from "./panels";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const note = await prisma.note.findUnique({
@@ -9,19 +17,5 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   });
 
-  return (
-    <Card>
-      {note.pictureUrl ? (
-        <CardMedia
-          component={"img"}
-          image={note.pictureUrl}
-          sx={{ height: 140 }}
-        />
-      ) : null}
-      <CardContent>
-        <WordHighlighter note={note} />
-      </CardContent>
-      <CardActions disableSpacing></CardActions>
-    </Card>
-  );
+  return <Panels note={note}></Panels>;
 }
