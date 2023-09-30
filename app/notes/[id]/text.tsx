@@ -1,12 +1,5 @@
 "use client";
 import { Typography } from "@mui/material";
-import { useState } from "react";
-import ConnectWordDialog from "./ConnectWordDialog";
-export type NoteProps = {
-  id: number;
-  text: string;
-  pictureUrl: string | null;
-};
 
 function splitByWords(
   text: string
@@ -30,19 +23,18 @@ function splitByWords(
   return result;
 }
 
-export default function WordHighlighter({ note }: { note: NoteProps }) {
-  const [lastInterest, setLastInterest] = useState({ word: "", open: false }); // keep track of the last word because close dialog need time to perform animation
-  const handleClickOpen = (word: string) => {
-    setLastInterest({ word, open: true });
-  };
-  const handleClose = () => {
-    setLastInterest({ ...lastInterest, open: false });
-  };
+export default function NoteText({
+  text,
+  onClick,
+}: {
+  text: string;
+  onClick: (word: string) => void;
+}) {
   return (
     <div>
       <div>
-        {splitByWords(note.text).map(({ start, end, isWord }) => {
-          const t = note.text.slice(start, end);
+        {splitByWords(text).map(({ start, end, isWord }) => {
+          const t = text.slice(start, end);
           if (!isWord) {
             return (
               <Typography variant="body1" component="span" key={start}>
@@ -59,7 +51,7 @@ export default function WordHighlighter({ note }: { note: NoteProps }) {
                 },
               }}
               component="span"
-              onClick={() => handleClickOpen(t)}
+              onClick={() => onClick(t)}
               key={start}
             >
               {t}
@@ -67,11 +59,6 @@ export default function WordHighlighter({ note }: { note: NoteProps }) {
           );
         })}
       </div>
-      <ConnectWordDialog
-        wordText={lastInterest.word}
-        open={lastInterest.open}
-        onClose={handleClose}
-      ></ConnectWordDialog>
     </div>
   );
 }
