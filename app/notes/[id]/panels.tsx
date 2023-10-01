@@ -1,19 +1,20 @@
 "use client";
 import {
-  Stack,
   Card,
-  CardMedia,
-  CardContent,
   CardActions,
+  CardContent,
+  CardMedia,
+  Stack,
 } from "@mui/material";
-import NoteText from "./text";
-import { Word } from "./word";
 import { useState } from "react";
+import { NoteText, WordMeaningExampleProps } from "./text";
+import { Word } from "./word";
 
 type NoteProps = {
   id: number;
   text: string;
   pictureUrl: string | null;
+  wordMeaningExamples: WordMeaningExampleProps[];
 };
 
 export function Panels({ note }: { note: NoteProps }) {
@@ -29,8 +30,8 @@ export function Panels({ note }: { note: NoteProps }) {
   };
   return (
     <>
-      <Stack direction="row">
-        <Card>
+      <Stack direction="row" spacing={2}>
+        <Card sx={{ height: "fit-content" }}>
           {note.pictureUrl ? (
             <CardMedia
               component={"img"}
@@ -39,7 +40,11 @@ export function Panels({ note }: { note: NoteProps }) {
             />
           ) : null}
           <CardContent>
-            <NoteText text={note.text} onClick={handleClickWord} />
+            <NoteText
+              text={note.text}
+              wordMeaningExamples={note.wordMeaningExamples}
+              onClick={handleClickWord}
+            />
           </CardContent>
           <CardActions disableSpacing></CardActions>
         </Card>

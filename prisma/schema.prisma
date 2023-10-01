@@ -9,14 +9,14 @@ datasource db {
 }
 
 model Note {
-    id                 Int                  @id @default(autoincrement())
-    text               String
-    videoUrl           String?
-    pictureUrl         String?
-    lastReviewedAt     DateTime             @default(now())
-    createdAt          DateTime             @default(now())
-    updatedAt          DateTime             @updatedAt
-    wordMeaningExample WordMeaningExample[]
+    id                  Int                  @id @default(autoincrement())
+    text                String
+    videoUrl            String?
+    pictureUrl          String?
+    lastReviewedAt      DateTime             @default(now())
+    createdAt           DateTime             @default(now())
+    updatedAt           DateTime             @updatedAt
+    wordMeaningExamples WordMeaningExample[]
 }
 
 model Word {
