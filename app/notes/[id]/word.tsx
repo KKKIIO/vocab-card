@@ -1,11 +1,12 @@
 "use client";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import useSWRMutation from "swr/mutation";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import {
   Alert,
   Button,
   Card,
+  CardActions,
   CardContent,
   CardHeader,
   Dialog,
@@ -17,16 +18,14 @@ import {
   IconButton,
   List,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
   Skeleton,
-  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
-import logger from "lib/logger";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import useSWR, { Fetcher } from "swr";
+import useSWRMutation from "swr/mutation";
 
 export type WordProps = {
   id: number;
@@ -44,7 +43,7 @@ function sendRequest(url: string, { arg }: { arg: any }) {
   }).then((res) => res.json());
 }
 
-const wordFetcher: Fetcher<WordProps, string> = (url: string) => {
+const wordFetcher: Fetcher<WordProps | null, string> = (url: string) => {
   return fetch(url)
     .then((res) => res.json())
     .then((res) => res.data);
@@ -58,15 +57,43 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
     mutate,
   } = useSWR(`/api/words?text=${text}`, wordFetcher);
   const { trigger, isMutating } = useSWRMutation(`/api/words`, sendRequest);
+  const [open, setOpen] = useState(false);
+  const [explanation, setExplanation] = useState("");
+  const { trigger: triggerMeanings, isMutating: isMutatingMeanings } =
+    useSWRMutation(
+      () => (word ? `/api/words/${word.id}/meanings` : null),
+      sendRequest
+    );
+  function handleClose() {
+    setOpen(false);
+    setExplanation("");
+  }
   return (
     <>
-      <Card>
+      <Card
+        sx={{
+          minHeight: 400,
+          width: 350,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <CardHeader
           title={text}
           action={
-            <IconButton aria-label="close" onClick={onClose}>
-              <CloseIcon />
-            </IconButton>
+            <>
+              {!isLoading && !error && word ? (
+                <IconButton
+                  aria-label="add meaning"
+                  onClick={() => setOpen(true)}
+                >
+                  <PlaylistAddIcon />
+                </IconButton>
+              ) : null}
+              <IconButton aria-label="close" onClick={onClose}>
+                <CloseIcon />
+              </IconButton>
+            </>
           }
         />
         <Divider />
@@ -76,9 +103,28 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
           ) : error ? (
             <Alert severity="error">{error}</Alert>
           ) : word ? (
-            <WordMeanings word={word} onMutate={() => mutate()} />
+            <WordMeanings word={word} />
           ) : (
+            <>
+              <Typography variant="body1">
+                The word <strong>{text}</strong> is not in the dictionary.
+              </Typography>
+              <Typography variant="body1">Would you like to add it?</Typography>
+            </>
+          )}
+        </CardContent>
+        <CardActions
+          sx={{
+            mt: "auto",
+            display: "flex",
+            flexDirection: "column", // FIXME: we want to align the button to the right using "row" but it only works with "column"
+            alignItems: "flex-end",
+          }}
+        >
+          {!isLoading && !error && !word ? (
             <Button
+              variant="contained"
+              startIcon={<AddIcon />}
               aria-disabled={isMutating}
               onClick={() =>
                 trigger({
@@ -87,74 +133,17 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
                   mutate();
                 })
               }
-              variant="outlined"
-              sx={{
-                textTransform: "none",
-              }}
             >
-              <Typography variant="body1" component="span">
-                The word <strong>{text}</strong> is not in the dictionary. Would
-                you like to add it?
-              </Typography>
+              ADD
             </Button>
-          )}
-        </CardContent>
+          ) : null}
+        </CardActions>
       </Card>
-    </>
-  );
-}
-
-function WordMeanings({
-  word,
-  onMutate,
-}: {
-  word: WordProps;
-  onMutate: () => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const [explanation, setExplanation] = useState("");
-  const { trigger, isMutating } = useSWRMutation(
-    `/api/words/${word.id}/meanings`,
-    sendRequest
-  );
-  function handleClose() {
-    setOpen(false);
-    setExplanation("");
-  }
-  return (
-    <>
-      <List>
-        {word.wordMeanings.map((meaning, index) => (
-          <ListItemButton
-            sx={{
-              border: "4px solid #ccc",
-              borderRadius: "4px",
-              minHeight: "80px",
-            }}
-          >
-            <ListItemText key={index}>{meaning.explanation}</ListItemText>
-          </ListItemButton>
-        ))}
-        <ListItemButton
-          key={word.wordMeanings.length}
-          onClick={() => setOpen(true)}
-          sx={{
-            border: "4px dotted #ccc",
-            borderRadius: "4px",
-            minHeight: "80px",
-          }}
-        >
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText>New Meaning</ListItemText>
-        </ListItemButton>
-      </List>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>Add new meaning</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Add a new meaning for the word {word.text}
+            Add a new meaning for the word {text}
           </DialogContentText>
           <TextField
             autoFocus
@@ -169,13 +158,13 @@ function WordMeanings({
         </DialogContent>
         <DialogActions>
           <Button
-            aria-disabled={isMutating}
+            aria-disabled={isMutatingMeanings}
             onClick={() =>
-              trigger({
+              triggerMeanings({
                 explanation,
               }).then(() => {
                 handleClose();
-                onMutate();
+                mutate();
               })
             }
           >
@@ -187,48 +176,20 @@ function WordMeanings({
   );
 }
 
-// export function AddWord({
-//   wordText,
-//   onMutate,
-// }: {
-//   wordText: string;
-//   onMutate: (word: WordProps) => void;
-// }) {
-//   const [isTransitionStarted, startTransition] = useTransition();
-//   function createWord() {
-//     startTransition(() => {
-//       fetch(`/api/words`, {
-//         method: "POST",
-//         body: JSON.stringify({ text: wordText }),
-//       })
-//         .then((res) => res.json())
-//         .then((res) => {
-//           onMutate(res.data);
-//         })
-//         .catch((err) => {
-//           // TODO: handle error
-//           logger.error(err);
-//         });
-//     });
-//   }
-//   return (
-//     <Dialog open={open} onClose={onClose}>
-//       <DialogTitle id="alert-dialog-title">
-//         {"Add word to dictionary"}
-//       </DialogTitle>
-//       <DialogContent>
-//         <DialogContentText id="alert-dialog-description">
-//           {`The word "${wordText}" is not in the dictionary. Would you like to add it?`}
-//         </DialogContentText>
-//       </DialogContent>
-//       <DialogActions>
-//         <Button aria-disabled={isTransitionStarted} onClick={createWord}>
-//           Yes
-//         </Button>
-//         <Button onClick={onClose} autoFocus>
-//           No
-//         </Button>
-//       </DialogActions>
-//     </Dialog>
-//   );
-// }
+function WordMeanings({ word }: { word: WordProps }) {
+  return (
+    <List>
+      {word.wordMeanings.map((meaning, index) => (
+        <ListItemButton
+          sx={{
+            border: "4px solid #ccc",
+            borderRadius: "4px",
+            minHeight: "80px",
+          }}
+        >
+          <ListItemText key={index}>{meaning.explanation}</ListItemText>
+        </ListItemButton>
+      ))}
+    </List>
+  );
+}

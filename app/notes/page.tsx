@@ -1,12 +1,13 @@
-import prisma from "../../lib/prisma";
 import {
   Box,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
+  Stack,
   Typography,
 } from "@mui/material";
+import prisma from "lib/prisma";
 import Link from "next/link";
 
 export default async function Page() {
@@ -16,7 +17,7 @@ export default async function Page() {
   });
 
   return (
-    <Box>
+    <Stack spacing={2}>
       {notes.map((note) => (
         <Card>
           <CardActionArea component={Link} href={`/notes/${note.id}`}>
@@ -35,6 +36,6 @@ export default async function Page() {
           </CardActionArea>
         </Card>
       ))}
-    </Box>
+    </Stack>
   );
 }

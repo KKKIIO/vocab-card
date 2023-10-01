@@ -1,6 +1,18 @@
 "use client";
 import { Typography } from "@mui/material";
 
+export type WordMeaningExampleProps = {
+  id: number;
+  wordMeaning: {
+    id: number;
+    explanation: string;
+    word: {
+      id: number;
+      text: string;
+    };
+  };
+};
+
 function splitByWords(
   text: string
 ): { start: number; end: number; isWord: boolean }[] {
@@ -23,13 +35,19 @@ function splitByWords(
   return result;
 }
 
-export default function NoteText({
+export function NoteText({
   text,
+  wordMeaningExamples,
   onClick,
 }: {
   text: string;
+  wordMeaningExamples: WordMeaningExampleProps[];
   onClick: (word: string) => void;
 }) {
+  const words = wordMeaningExamples.reduce((acc, { wordMeaning }) => {
+    acc[wordMeaning.word.text] = true;
+    return acc;
+  }, {} as Record<string, boolean>);
   return (
     <div>
       <div>
@@ -42,14 +60,19 @@ export default function NoteText({
               </Typography>
             );
           }
+          const sx = {
+            "&:hover": {
+              backgroundColor: "yellow",
+            },
+            cursor: "pointer",
+          };
+          if (words[t]) {
+            sx["textDecoration"] = "underline";
+          }
           return (
             <Typography
               variant="body1"
-              sx={{
-                "&:hover": {
-                  backgroundColor: "yellow",
-                },
-              }}
+              sx={sx}
               component="span"
               onClick={() => onClick(t)}
               key={start}
