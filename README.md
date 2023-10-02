@@ -1,5 +1,5 @@
-# Lang Note Book
+# Vocab Card
 
-Learning language through favorite notes.
+通过制作印象卡片来学单词。
 
-Use [Next.Js App Router](https://nextjs.org/docs/app) to build this project.
+本项目也是个人的 [Next.Js App Router](https://nextjs.org/docs/app) 学习项目。
