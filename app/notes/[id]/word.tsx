@@ -1,7 +1,10 @@
 "use client";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import {
+  Add as AddIcon,
+  Close as CloseIcon,
+  PlaylistAdd as PlaylistAddIcon,
+  Save as SaveIcon,
+} from "@mui/icons-material";
 import {
   Alert,
   Button,
@@ -16,24 +19,25 @@ import {
   DialogTitle,
   Divider,
   IconButton,
-  List,
-  ListItemButton,
-  ListItemText,
   Skeleton,
   TextField,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import {
+  // @ts-ignore
+  experimental_useFormState as useFormState,
+  experimental_useFormStatus as useFormStatus,
+} from "react-dom";
 import useSWR, { Fetcher } from "swr";
 import useSWRMutation from "swr/mutation";
+import { WordMeaningProps, WordMeanings } from "./WordMeanings";
+import { setWordMeaningExample } from "./actions";
 
 export type WordProps = {
   id: number;
   text: string;
-  wordMeanings: {
-    id: number;
-    explanation: string;
-  }[];
+  wordMeanings: WordMeaningProps[];
 };
 
 function sendRequest(url: string, { arg }: { arg: any }) {
@@ -49,7 +53,17 @@ const wordFetcher: Fetcher<WordProps | null, string> = (url: string) => {
     .then((res) => res.data);
 };
 
-export function Word({ text, onClose }: { text: string; onClose: () => void }) {
+export function Word({
+  text,
+  noteId,
+  meaningId,
+  onClose,
+}: {
+  text: string;
+  noteId: number;
+  meaningId: number | null;
+  onClose: () => void;
+}) {
   const {
     data: word,
     error,
@@ -59,11 +73,14 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
   const { trigger, isMutating } = useSWRMutation(`/api/words`, sendRequest);
   const [open, setOpen] = useState(false);
   const [explanation, setExplanation] = useState("");
-  const { trigger: triggerMeanings, isMutating: isMutatingMeanings } =
-    useSWRMutation(
-      () => (word ? `/api/words/${word.id}/meanings` : null),
-      sendRequest
-    );
+  const { trigger: addMeaning, isMutating: isAddingMeaning } = useSWRMutation(
+    () => (word ? `/api/words/${word.id}/meanings` : null),
+    sendRequest
+  );
+  const [state, setExampleAction] = useFormState(setWordMeaningExample, {
+    error: null,
+  });
+  const { pending: setExamplePending } = useFormStatus();
   function handleClose() {
     setOpen(false);
     setExplanation("");
@@ -72,14 +89,18 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
     <>
       <Card
         sx={{
-          minHeight: 400,
           width: 350,
-          display: "flex",
-          flexDirection: "column",
         }}
+        component="form"
+        action={setExampleAction}
       >
         <CardHeader
           title={text}
+          titleTypographyProps={{
+            sx: {
+              textTransform: "capitalize",
+            },
+          }}
           action={
             <>
               {!isLoading && !error && word ? (
@@ -97,31 +118,50 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
           }
         />
         <Divider />
-        <CardContent>
+        <CardContent
+          sx={{
+            minHeight: 200,
+          }}
+        >
           {isLoading ? (
             <Skeleton variant="rectangular" width={210} height={60} />
           ) : error ? (
             <Alert severity="error">{error}</Alert>
           ) : word ? (
-            <WordMeanings word={word} />
-          ) : (
             <>
+              <input type="hidden" name="noteId" value={noteId} />
+              <input type="hidden" name="wordId" value={word.id} />
+              <WordMeanings
+                wordMeanings={word.wordMeanings}
+                previousId={meaningId}
+              />
+            </>
+          ) : (
+            <Alert severity="info">
               <Typography variant="body1">
-                The word <strong>{text}</strong> is not in the dictionary.
+                This word is not in the dictionary.
               </Typography>
               <Typography variant="body1">Would you like to add it?</Typography>
-            </>
+            </Alert>
           )}
         </CardContent>
         <CardActions
           sx={{
-            mt: "auto",
             display: "flex",
             flexDirection: "column", // FIXME: we want to align the button to the right using "row" but it only works with "column"
             alignItems: "flex-end",
           }}
         >
-          {!isLoading && !error && !word ? (
+          {isLoading || error ? null : word ? (
+            <Button
+              variant="contained"
+              startIcon={<SaveIcon />}
+              aria-disabled={setExamplePending}
+              type="submit"
+            >
+              Save
+            </Button>
+          ) : (
             <Button
               variant="contained"
               startIcon={<AddIcon />}
@@ -134,16 +174,16 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
                 })
               }
             >
-              ADD
+              Add
             </Button>
-          ) : null}
+          )}
         </CardActions>
       </Card>
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <DialogTitle>Add new meaning</DialogTitle>
+        <DialogTitle>Add Meaning</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Add a new meaning for the word {text}
+            Add a new meaning for the word <strong>{text}</strong>
           </DialogContentText>
           <TextField
             autoFocus
@@ -158,9 +198,9 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
         </DialogContent>
         <DialogActions>
           <Button
-            aria-disabled={isMutatingMeanings}
+            aria-disabled={isAddingMeaning}
             onClick={() =>
-              triggerMeanings({
+              addMeaning({
                 explanation,
               }).then(() => {
                 handleClose();
@@ -173,23 +213,5 @@ export function Word({ text, onClose }: { text: string; onClose: () => void }) {
         </DialogActions>
       </Dialog>
     </>
-  );
-}
-
-function WordMeanings({ word }: { word: WordProps }) {
-  return (
-    <List>
-      {word.wordMeanings.map((meaning, index) => (
-        <ListItemButton
-          sx={{
-            border: "4px solid #ccc",
-            borderRadius: "4px",
-            minHeight: "80px",
-          }}
-        >
-          <ListItemText key={index}>{meaning.explanation}</ListItemText>
-        </ListItemButton>
-      ))}
-    </List>
   );
 }
