@@ -28,6 +28,16 @@ export function Panels({ note }: { note: NoteProps }) {
   const handleCloseWordPanel = () => {
     setLastInterest({ ...lastInterest, open: false }); // keep track of the last word because close animation need time to perform
   };
+  let meaningId = null;
+  if (lastInterest.text) {
+    const wordMeaningExample = note.wordMeaningExamples.find(
+      (wordMeaningExample) =>
+        wordMeaningExample.wordMeaning.word.text === lastInterest.text
+    );
+    if (wordMeaningExample) {
+      meaningId = wordMeaningExample.wordMeaning.id;
+    }
+  }
   return (
     <>
       <Stack direction="row" spacing={2}>
@@ -49,7 +59,12 @@ export function Panels({ note }: { note: NoteProps }) {
           <CardActions disableSpacing></CardActions>
         </Card>
         {lastInterest.open ? (
-          <Word text={lastInterest.text} onClose={handleCloseWordPanel}></Word>
+          <Word
+            text={lastInterest.text}
+            noteId={note.id}
+            meaningId={meaningId}
+            onClose={handleCloseWordPanel}
+          ></Word>
         ) : null}
       </Stack>
     </>

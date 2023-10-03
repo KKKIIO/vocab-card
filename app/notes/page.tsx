@@ -19,7 +19,7 @@ export default async function Page() {
   return (
     <Stack spacing={2}>
       {notes.map((note) => (
-        <Card>
+        <Card key={note.id}>
           <CardActionArea component={Link} href={`/notes/${note.id}`}>
             <Box sx={{ flex: "column" }}>
               {note.pictureUrl ? (
