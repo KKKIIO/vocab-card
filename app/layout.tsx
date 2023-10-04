@@ -1,3 +1,9 @@
+import HomeIcon from "@mui/icons-material/Home";
+import LightbulbIcon from "@mui/icons-material/Lightbulb";
+import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
+import SettingsIcon from "@mui/icons-material/Settings";
+import SupportIcon from "@mui/icons-material/Support";
 import {
   AppBar,
   Box,
@@ -12,17 +18,11 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import HomeIcon from "@mui/icons-material/Home";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import SettingsIcon from "@mui/icons-material/Settings";
-import SupportIcon from "@mui/icons-material/Support";
-import LogoutIcon from "@mui/icons-material/Logout";
 const DRAWER_WIDTH = 240;
 
 const LINKS = [
   { text: "Home", href: "/", icon: HomeIcon },
-  { text: "Notes", href: "/notes", icon: LightbulbIcon },
+  { text: "Cards", href: "/cards", icon: LightbulbIcon },
 ];
 
 const PLACEHOLDER_LINKS = [
@@ -43,7 +43,7 @@ export default function RootLayout({
           <Toolbar>
             <MenuIcon />
             <Typography variant="h6" noWrap component="div">
-              Lang Note Book
+              Vocab Card
             </Typography>
           </Toolbar>
         </AppBar>

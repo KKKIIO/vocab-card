@@ -35,7 +35,7 @@ function splitByWords(
   return result;
 }
 
-export function NoteText({
+export function CardText({
   text,
   wordMeaningExamples,
   onClick,

@@ -7,17 +7,17 @@ import {
   Stack,
 } from "@mui/material";
 import { useState } from "react";
-import { NoteText, WordMeaningExampleProps } from "./text";
+import { CardText, WordMeaningExampleProps } from "./CardText";
 import { Word } from "./word";
 
-type NoteProps = {
+type CardProps = {
   id: number;
   text: string;
-  pictureUrl: string | null;
+  imageUrl: string | null;
   wordMeaningExamples: WordMeaningExampleProps[];
 };
 
-export function Panels({ note }: { note: NoteProps }) {
+export function Panels({ card }: { card: CardProps }) {
   const [lastInterest, setLastInterest] = useState({
     text: "",
     open: false,
@@ -30,7 +30,7 @@ export function Panels({ note }: { note: NoteProps }) {
   };
   let meaningId = null;
   if (lastInterest.text) {
-    const wordMeaningExample = note.wordMeaningExamples.find(
+    const wordMeaningExample = card.wordMeaningExamples.find(
       (wordMeaningExample) =>
         wordMeaningExample.wordMeaning.word.text === lastInterest.text
     );
@@ -42,17 +42,17 @@ export function Panels({ note }: { note: NoteProps }) {
     <>
       <Stack direction="row" spacing={2}>
         <Card sx={{ height: "fit-content" }}>
-          {note.pictureUrl ? (
+          {card.imageUrl ? (
             <CardMedia
               component={"img"}
-              image={note.pictureUrl}
+              image={card.imageUrl}
               sx={{ height: 140 }}
             />
           ) : null}
           <CardContent>
-            <NoteText
-              text={note.text}
-              wordMeaningExamples={note.wordMeaningExamples}
+            <CardText
+              text={card.text}
+              wordMeaningExamples={card.wordMeaningExamples}
               onClick={handleClickWord}
             />
           </CardContent>
@@ -61,7 +61,7 @@ export function Panels({ note }: { note: NoteProps }) {
         {lastInterest.open ? (
           <Word
             text={lastInterest.text}
-            noteId={note.id}
+            noteId={card.id}
             meaningId={meaningId}
             onClose={handleCloseWordPanel}
           ></Word>
