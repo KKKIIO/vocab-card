@@ -10,18 +10,18 @@ export async function setWordMeaningExample(
 ) {
   logger.info({ formData }, "setWordMeaningExample");
   const schema = z.object({
-    noteId: z.number(),
+    cardId: z.number(),
     wordId: z.number(),
     meaningId: z.number(),
   });
 
   const data = schema.parse({
-    noteId: Number(formData.get("noteId")),
+    cardId: Number(formData.get("cardId")),
     wordId: Number(formData.get("wordId")),
     meaningId: Number(formData.get("meaningId")),
   });
-  // one word can only have one meaning example in a note(for now)
-  // delete all meaning examples of the word in the note
+  // one word can only have one meaning example in a card(for now)
+  // delete all meaning examples of the word in the card
   const meanings = await prisma.wordMeaning.findMany({
     where: {
       wordId: data.wordId,
@@ -38,7 +38,7 @@ export async function setWordMeaningExample(
   }
   await prisma.wordMeaningExample.deleteMany({
     where: {
-      noteId: data.noteId,
+      cardId: data.cardId,
       wordMeaningId: {
         in: meanings.map((meaning) => meaning.id),
       },
@@ -47,10 +47,10 @@ export async function setWordMeaningExample(
   // create new meaning example
   const meaningExample = await prisma.wordMeaningExample.create({
     data: {
-      noteId: data.noteId,
+      cardId: data.cardId,
       wordMeaningId: data.meaningId,
     },
   });
-  revalidatePath(`/notes/${data.noteId}`);
+  revalidatePath(`/cards/${data.cardId}`);
   // TODO: handle error
 }

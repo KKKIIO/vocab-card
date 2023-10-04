@@ -8,11 +8,11 @@ datasource db {
     url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
 }
 
-model Note {
+model Card {
     id                  Int                  @id @default(autoincrement())
     text                String
-    videoUrl            String?
-    pictureUrl          String?
+    videoUrl            String               @default("")
+    imageUrl            String               @default("")
     lastReviewedAt      DateTime             @default(now())
     createdAt           DateTime             @default(now())
     updatedAt           DateTime             @updatedAt
@@ -58,8 +58,8 @@ model WordMeaningExample {
     id            Int         @id @default(autoincrement())
     wordMeaningId Int
     wordMeaning   WordMeaning @relation(fields: [wordMeaningId], references: [id])
-    noteId        Int
-    note          Note        @relation(fields: [noteId], references: [id])
+    cardId        Int
+    card          Card        @relation(fields: [cardId], references: [id])
     createdAt     DateTime    @default(now())
     updatedAt     DateTime    @updatedAt
 }

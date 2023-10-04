@@ -2,7 +2,7 @@ import prisma from "lib/prisma";
 import { Panels } from "./panels";
 
 export default async function Page({ params }: { params: { id: string } }) {
-  const note = await prisma.note.findUnique({
+  const card = await prisma.card.findUnique({
     where: {
       id: Number(params.id),
     },
@@ -26,5 +26,5 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   });
 
-  return <Panels note={note}></Panels>;
+  return <Panels card={card}></Panels>;
 }

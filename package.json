@@ -1,5 +1,5 @@
 {
-  "name": "lang-note-book",
+  "name": "vocab-card",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -16,14 +16,11 @@
     "@mui/icons-material": "^5.14.9",
     "@mui/material": "^5.14.9",
     "@prisma/client": "^5.3.1",
-    "babel-plugin-superjson-next": "^0.4.5",
     "next": "^13.5",
     "next-superjson-plugin": "^0.5.9",
     "pino": "^8.15.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hotkeys-hook": "^4.4.1",
-    "react-markdown": "8.0.0",
     "superjson": "^1.13.1",
     "swr": "^2.2.4",
     "zod": "^3.22.2"

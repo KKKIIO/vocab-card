@@ -11,26 +11,26 @@ import prisma from "lib/prisma";
 import Link from "next/link";
 
 export default async function Page() {
-  const notes = await prisma.note.findMany({
+  const cards = await prisma.card.findMany({
     orderBy: [{ lastReviewedAt: "asc" }],
     take: 10,
   });
 
   return (
     <Stack spacing={2}>
-      {notes.map((note) => (
-        <Card key={note.id}>
-          <CardActionArea component={Link} href={`/notes/${note.id}`}>
+      {cards.map((card) => (
+        <Card key={card.id}>
+          <CardActionArea component={Link} href={`/cards/${card.id}`}>
             <Box sx={{ flex: "column" }}>
-              {note.pictureUrl ? (
+              {card.imageUrl ? (
                 <CardMedia
                   component={"img"}
-                  image={note.pictureUrl}
+                  image={card.imageUrl}
                   sx={{ height: 140 }}
                 />
               ) : null}
               <CardContent>
-                <Typography variant="body1">{note.text}</Typography>
+                <Typography variant="body1">{card.text}</Typography>
               </CardContent>
             </Box>
           </CardActionArea>
