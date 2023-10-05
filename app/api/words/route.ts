@@ -1,5 +1,4 @@
-import { type NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import prisma from "../../../lib/prisma";
 
@@ -7,20 +6,22 @@ export async function GET(request: NextRequest) {
   // search by text
   const searchParams = request.nextUrl.searchParams;
   const text = searchParams.get("text");
-  const word = await prisma.word.findUnique({
-    where: {
-      text,
-    },
-    include: {
-      wordMeanings: {
-        select: {
-          id: true,
-          explanation: true,
-          createdAt: true,
+  const word = text
+    ? await prisma.word.findUnique({
+        where: {
+          text,
         },
-      },
-    },
-  });
+        include: {
+          wordMeanings: {
+            select: {
+              id: true,
+              explanation: true,
+              createdAt: true,
+            },
+          },
+        },
+      })
+    : null;
   return NextResponse.json({ data: word });
 }
 

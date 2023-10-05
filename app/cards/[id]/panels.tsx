@@ -28,16 +28,12 @@ export function Panels({ card }: { card: CardProps }) {
   const handleCloseWordPanel = () => {
     setLastInterest({ ...lastInterest, open: false }); // keep track of the last word because close animation need time to perform
   };
-  let meaningId = null;
-  if (lastInterest.text) {
-    const wordMeaningExample = card.wordMeaningExamples.find(
-      (wordMeaningExample) =>
-        wordMeaningExample.wordMeaning.word.text === lastInterest.text
-    );
-    if (wordMeaningExample) {
-      meaningId = wordMeaningExample.wordMeaning.id;
-    }
-  }
+  const meaningId = lastInterest.text
+    ? card.wordMeaningExamples.find(
+        (wordMeaningExample) =>
+          wordMeaningExample.wordMeaning.word.text === lastInterest.text
+      )?.wordMeaning?.id ?? null
+    : null;
   return (
     <>
       <Stack direction="row" spacing={2}>

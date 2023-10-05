@@ -1,4 +1,5 @@
 import prisma from "lib/prisma";
+import { notFound } from "next/navigation";
 import { Panels } from "./panels";
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -25,6 +26,9 @@ export default async function Page({ params }: { params: { id: string } }) {
       },
     },
   });
+  if (!card) {
+    return notFound();
+  }
 
   return <Panels card={card}></Panels>;
 }
