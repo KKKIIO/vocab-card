@@ -19,10 +19,10 @@ function splitByWords(
   const wordRegexp = /\w+/g;
   const matchs = text.matchAll(wordRegexp);
   let lastIndex = 0;
-  const result = [];
+  const result: { start: number; end: number; isWord: boolean }[] = [];
   for (const match of matchs) {
     const word = match[0];
-    const index = match.index;
+    const index = match.index!;
     if (index > lastIndex) {
       result.push({ start: lastIndex, end: index, isWord: false });
     }
