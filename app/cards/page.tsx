@@ -1,3 +1,4 @@
+import { Delete } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -5,6 +6,7 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
+  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -16,7 +18,7 @@ export default async function Page() {
     include: {
       source: true,
     },
-    orderBy: [{ lastReviewedAt: "asc" }],
+    orderBy: [{ createdAt: "desc" }],
     take: 10,
   });
 
@@ -41,7 +43,19 @@ export default async function Page() {
                   </CardContent>
                 </Stack>
               </CardActionArea>
-              {source ? <Source source={source}></Source> : null}
+              <Box
+                sx={{
+                  padding: 1,
+                  width: 150,
+                }}
+              >
+                <Stack direction="row" justifyContent="flex-end">
+                  <IconButton>
+                    <Delete />
+                  </IconButton>
+                </Stack>
+                {source ? <Source source={source}></Source> : null}
+              </Box>
             </Stack>
           </Card>
         );
@@ -53,23 +67,18 @@ export default async function Page() {
 function Source({ source }: { source: { name: string; url: string } }) {
   const hostname = new URL(source.url).hostname;
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 1,
-        width: 120,
-      }}
-    >
+    <Stack direction="column" spacing={1} alignItems="center">
       <Avatar
         alt={`${hostname} icon`}
         src={`https://icon.horse/icon/${hostname}?size=small`}
+        sx={{
+          width: 24,
+          height: 24,
+        }}
       />
       <Typography variant="body2" color="text.secondary">
         <Link href={source.url}>{source.name}</Link>
       </Typography>
-    </Box>
+    </Stack>
   );
 }

@@ -89,7 +89,7 @@ export function Word({
     <>
       <Card
         sx={{
-          width: 350,
+          width: 600,
         }}
         component="form"
         action={setExampleAction}
@@ -148,8 +148,8 @@ export function Word({
         <CardActions
           sx={{
             display: "flex",
-            flexDirection: "column", // FIXME: we want to align the button to the right using "row" but it only works with "column"
-            alignItems: "flex-end",
+            flexDirection: "row",
+            justifyContent: "flex-end",
           }}
         >
           {isLoading || error ? null : word ? (

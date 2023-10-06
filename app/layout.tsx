@@ -1,7 +1,6 @@
-import HomeIcon from "@mui/icons-material/Home";
+import { Home, Style } from "@mui/icons-material";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import LogoutIcon from "@mui/icons-material/Logout";
-import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SupportIcon from "@mui/icons-material/Support";
 import {
@@ -9,19 +8,19 @@ import {
   Box,
   Divider,
   Drawer,
-  Link,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Toolbar,
-  Typography,
 } from "@mui/material";
+import Link from "next/link";
 const DRAWER_WIDTH = 240;
 
 const LINKS = [
-  { text: "Home", href: "/", icon: HomeIcon },
+  { text: "Home", href: "/", icon: Home },
   { text: "Cards", href: "/cards", icon: LightbulbIcon },
 ];
 
@@ -41,10 +40,9 @@ export default function RootLayout({
       <body>
         <AppBar position="fixed" sx={{ zIndex: 2000 }}>
           <Toolbar>
-            <MenuIcon />
-            <Typography variant="h6" noWrap component="div">
-              Vocab Card
-            </Typography>
+            <IconButton href="/" size="large" edge="start" color="inherit">
+              <Style />
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer

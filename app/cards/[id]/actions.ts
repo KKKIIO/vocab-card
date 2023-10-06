@@ -1,25 +1,18 @@
 "use server";
-import logger from "lib/logger";
 import prisma from "lib/prisma";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
+import { zfd } from "zod-form-data";
+const schema = zfd.formData({
+  cardId: zfd.numeric(),
+  wordId: zfd.numeric(),
+  meaningId: zfd.numeric(),
+});
 
 export async function setWordMeaningExample(
   prevState: any,
   formData: FormData
 ) {
-  logger.info({ formData }, "setWordMeaningExample");
-  const schema = z.object({
-    cardId: z.number(),
-    wordId: z.number(),
-    meaningId: z.number(),
-  });
-
-  const data = schema.parse({
-    cardId: Number(formData.get("cardId")),
-    wordId: Number(formData.get("wordId")),
-    meaningId: Number(formData.get("meaningId")),
-  });
+  const data = schema.parse(formData);
   // one word can only have one meaning example in a card(for now)
   // delete all meaning examples of the word in the card
   const meanings = await prisma.wordMeaning.findMany({

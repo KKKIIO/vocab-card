@@ -29,6 +29,14 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!card) {
     return notFound();
   }
+  await prisma.card.update({
+    where: {
+      id: card.id,
+    },
+    data: {
+      lastReviewedAt: new Date(),
+    },
+  });
 
   return <Panels card={card}></Panels>;
 }
