@@ -55,12 +55,12 @@ const wordFetcher: Fetcher<WordProps | null, string> = (url: string) => {
 
 export function Word({
   text,
-  noteId,
+  cardId,
   meaningId,
   onClose,
 }: {
   text: string;
-  noteId: number;
+  cardId: number;
   meaningId: number | null;
   onClose: () => void;
 }) {
@@ -129,7 +129,7 @@ export function Word({
             <Alert severity="error">{error}</Alert>
           ) : word ? (
             <>
-              <input type="hidden" name="noteId" value={noteId} />
+              <input type="hidden" name="cardId" value={cardId} />
               <input type="hidden" name="wordId" value={word.id} />
               <WordMeanings
                 wordMeanings={word.wordMeanings}

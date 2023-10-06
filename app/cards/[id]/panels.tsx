@@ -57,7 +57,7 @@ export function Panels({ card }: { card: CardProps }) {
         {lastInterest.open ? (
           <Word
             text={lastInterest.text}
-            noteId={card.id}
+            cardId={card.id}
             meaningId={meaningId}
             onClose={handleCloseWordPanel}
           ></Word>
