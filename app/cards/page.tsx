@@ -11,9 +11,26 @@ import {
   Typography,
 } from "@mui/material";
 import prisma from "lib/prisma";
+import { revalidatePath } from "next/cache";
 import Link from "next/link";
+import { zfd } from "zod-form-data";
 
 export default async function Page() {
+  async function deleteCard(formData: FormData) {
+    "use server";
+    const schema = zfd.formData({
+      id: zfd.numeric(),
+    });
+    const { id } = schema.parse(formData);
+    await prisma.card.delete({
+      where: {
+        id,
+      },
+    });
+    revalidatePath("/cards");
+    // TODO: handle error
+  }
+
   const cards = await prisma.card.findMany({
     include: {
       source: true,
@@ -50,9 +67,12 @@ export default async function Page() {
                 }}
               >
                 <Stack direction="row" justifyContent="flex-end">
-                  <IconButton>
-                    <Delete />
-                  </IconButton>
+                  <form action={deleteCard}>
+                    <input type="hidden" name="id" value={card.id} />
+                    <IconButton type="submit">
+                      <Delete />
+                    </IconButton>
+                  </form>
                 </Stack>
                 {source ? <Source source={source}></Source> : null}
               </Box>
