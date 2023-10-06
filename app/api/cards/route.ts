@@ -1,4 +1,5 @@
 import prisma from "lib/prisma";
+import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 
@@ -32,5 +33,6 @@ export async function POST(request: NextRequest) {
       sourceId,
     },
   });
+  revalidatePath("/cards");
   return NextResponse.json({ data: card });
 }
