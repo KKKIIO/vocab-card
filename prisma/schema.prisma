@@ -8,9 +8,22 @@ datasource db {
     url      = env("POSTGRES_PRISMA_URL") // uses connection pooling
 }
 
+model Desk {
+    id        Int      @id @default(autoincrement())
+    name      String
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Restrict)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    cards     Card[]
+    sources   Source[]
+}
+
 model Card {
     id                  Int                  @id @default(autoincrement())
-    text                String
+    deskId              Int
+    desk                Desk                 @relation(fields: [deskId], references: [id])
+    text                String               @db.Text
     videoUrl            String               @default("")
     imageUrl            String               @default("")
     sourceId            Int?
@@ -32,7 +45,7 @@ model Word {
 
 model WordMeaning {
     id                  Int                  @id @default(autoincrement())
-    explanation         String
+    explanation         String               @db.Text
     wordId              Int
     word                Word                 @relation(fields: [wordId], references: [id], onDelete: Cascade)
     learnStatus         LearnStatus
@@ -68,9 +81,59 @@ model WordMeaningExample {
 
 model Source {
     id        Int      @id @default(autoincrement())
-    url       String   @unique
+    deskId    Int
+    desk      Desk     @relation(fields: [deskId], references: [id], onDelete: Cascade)
+    url       String
     name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     cards     Card[]
+
+    @@unique([deskId, url])
+}
+
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    image         String?
+    accounts      Account[]
+    sessions      Session[]
+    Desk          Desk[]
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
 }

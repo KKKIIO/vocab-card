@@ -1,7 +1,9 @@
+import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
 import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
+import { requireDefaultDesk } from "../../desks/query";
 
 const createSchema = z.object({
   text: z.string().min(1).max(1000),
@@ -15,19 +17,26 @@ const createSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
+  const userId = (await authenticatedUser()).id;
+  const desk = await requireDefaultDesk(userId);
   const body = await request.json();
   const { text, imageUrl, source } = createSchema.parse(body);
+  const deskId = desk.id;
   const sourceId = source
     ? (
         await prisma.source.upsert({
-          where: { url: source.url },
+          where: { deskId_url: { deskId, url: source.url } },
           update: {},
-          create: source,
+          create: {
+            ...source,
+            deskId,
+          },
         })
       ).id
     : null;
   const card = await prisma.card.create({
     data: {
+      deskId,
       text,
       imageUrl,
       sourceId,

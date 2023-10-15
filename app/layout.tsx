@@ -1,6 +1,5 @@
 import { Home, Style } from "@mui/icons-material";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import SupportIcon from "@mui/icons-material/Support";
 import {
@@ -15,7 +14,10 @@ import {
   ListItemIcon,
   ListItemText,
   Toolbar,
+  Typography,
 } from "@mui/material";
+import { UserAvatar } from "components/UserAvatar";
+import { authenticatedUser } from "lib/auth";
 import Link from "next/link";
 const DRAWER_WIDTH = 240;
 
@@ -27,22 +29,26 @@ const LINKS = [
 const PLACEHOLDER_LINKS = [
   { text: "Settings", icon: SettingsIcon },
   { text: "Support", icon: SupportIcon },
-  { text: "Logout", icon: LogoutIcon },
 ];
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const authUser = await authenticatedUser();
   return (
     <html lang="en">
       <body>
-        <AppBar position="fixed" sx={{ zIndex: 2000 }}>
+        <AppBar position="fixed">
           <Toolbar>
             <IconButton href="/" size="large" edge="start" color="inherit">
               <Style />
             </IconButton>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Vocab Card
+            </Typography>
+            <UserAvatar user={authUser} />
           </Toolbar>
         </AppBar>
         <Drawer

@@ -1,4 +1,4 @@
-import { Delete } from "@mui/icons-material";
+import { Delete, QuestionMark } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -7,31 +7,21 @@ import {
   CardContent,
   CardMedia,
   IconButton,
+  Link as MuiLink,
   Stack,
   Typography,
 } from "@mui/material";
+import { requireDefaultDesk } from "app/desks/query";
+import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
-import { revalidatePath } from "next/cache";
 import Link from "next/link";
-import { zfd } from "zod-form-data";
+import { deleteCard } from "./actions";
 
 export default async function Page() {
-  async function deleteCard(formData: FormData) {
-    "use server";
-    const schema = zfd.formData({
-      id: zfd.numeric(),
-    });
-    const { id } = schema.parse(formData);
-    await prisma.card.delete({
-      where: {
-        id,
-      },
-    });
-    revalidatePath("/cards");
-    // TODO: handle error
-  }
-
+  const user = await authenticatedUser();
+  const desk = await requireDefaultDesk(user.id);
   const cards = await prisma.card.findMany({
+    where: { deskId: desk.id },
     include: {
       source: true,
     },
@@ -66,7 +56,18 @@ export default async function Page() {
                   width: 150,
                 }}
               >
-                <Stack direction="row" justifyContent="flex-end">
+                <Stack direction="row">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      mr: "auto",
+                      padding: 1,
+                    }}
+                  >
+                    <SourceAvatar source={source} />
+                  </Box>
                   <form action={deleteCard}>
                     <input type="hidden" name="id" value={card.id} />
                     <IconButton type="submit">
@@ -74,7 +75,7 @@ export default async function Page() {
                     </IconButton>
                   </form>
                 </Stack>
-                {source ? <Source source={source}></Source> : null}
+                {source ? <SourceLink source={source}></SourceLink> : null}
               </Box>
             </Stack>
           </Card>
@@ -84,21 +85,39 @@ export default async function Page() {
   );
 }
 
-function Source({ source }: { source: { name: string; url: string } }) {
-  const hostname = new URL(source.url).hostname;
+function SourceLink({ source }: { source: { name: string; url: string } }) {
   return (
-    <Stack direction="column" spacing={1} alignItems="center">
-      <Avatar
-        alt={`${hostname} icon`}
-        src={`https://icon.horse/icon/${hostname}?size=small`}
-        sx={{
-          width: 24,
-          height: 24,
-        }}
-      />
-      <Typography variant="body2" color="text.secondary">
-        <Link href={source.url}>{source.name}</Link>
-      </Typography>
-    </Stack>
+    <MuiLink
+      href={source.url}
+      variant="body2"
+      color="text.secondary"
+      sx={{
+        textOverflow: "ellipsis",
+      }}
+    >
+      {source.name}
+    </MuiLink>
+  );
+}
+
+function SourceAvatar({ source }: { source: { url: string } | null }) {
+  return source ? (
+    (() => {
+      const hostname = new URL(source.url).hostname;
+      return (
+        <Avatar
+          alt={`${hostname} icon`}
+          src={`https://icon.horse/icon/${hostname}?size=small`}
+          sx={{
+            width: 24,
+            height: 24,
+          }}
+        />
+      );
+    })()
+  ) : (
+    <Avatar>
+      <QuestionMark />
+    </Avatar>
   );
 }
