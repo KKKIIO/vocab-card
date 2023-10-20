@@ -1,5 +1,7 @@
 "use client";
 import { Typography } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import { TextFontTheme } from "components/TextFontTheme";
 
 export type WordMeaningExampleProps = {
   id: number;
@@ -50,7 +52,7 @@ export function CardText({
   }, {} as Record<string, boolean>);
   return (
     <div>
-      <div>
+      <ThemeProvider theme={TextFontTheme}>
         {splitByWords(text).map(({ start, end, isWord }) => {
           const t = text.slice(start, end);
           if (!isWord) {
@@ -81,7 +83,7 @@ export function CardText({
             </Typography>
           );
         })}
-      </div>
+      </ThemeProvider>
     </div>
   );
 }

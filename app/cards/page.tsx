@@ -11,10 +11,12 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 import { requireDefaultDesk } from "app/desks/query";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
 import Link from "next/link";
+import { TextFontTheme } from "../../components/TextFontTheme";
 import { deleteCard } from "./actions";
 
 export default async function Page() {
@@ -46,7 +48,9 @@ export default async function Page() {
                     />
                   ) : null}
                   <CardContent>
-                    <Typography variant="body1">{card.text}</Typography>
+                    <ThemeProvider theme={TextFontTheme}>
+                      <Typography>{card.text}</Typography>
+                    </ThemeProvider>
                   </CardContent>
                 </Stack>
               </CardActionArea>

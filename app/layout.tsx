@@ -39,6 +39,13 @@ export default async function RootLayout({
   const authUser = await authenticatedUser();
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css?family=Arvo:400,400italic,700,700italic"
+          rel="stylesheet"
+          type="text/css"
+        />
+      </head>
       <body>
         <AppBar position="fixed">
           <Toolbar>
