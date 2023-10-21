@@ -24,9 +24,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build container
+      - name: Build app image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
+          tags: ${{ steps.meta.outputs.tags }}
+      - name: Build migrate image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          file: migrate.Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
