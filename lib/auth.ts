@@ -6,7 +6,7 @@ import type {
   NextApiResponse,
 } from "next";
 import { NextAuthOptions, getServerSession } from "next-auth";
-import EmailProvider from "next-auth/providers/email";
+import GoogleProvider from "next-auth/providers/google";
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -14,9 +14,9 @@ export const authOptions = {
     strategy: "jwt", // nextauth middleware only support jwt: https://next-auth.js.org/configuration/nextjs#caveats
   },
   providers: [
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   callbacks: {
