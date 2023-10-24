@@ -36,7 +36,6 @@ export default async function Page() {
 
   return (
     <>
-      {" "}
       <Stack spacing={2}>
         {cards.map((card) => {
           const source = card.source;
@@ -65,7 +64,7 @@ export default async function Page() {
                 <Box
                   sx={{
                     padding: 1,
-                    width: 150,
+                    width: "15%",
                   }}
                 >
                   <Stack direction="row">
@@ -96,8 +95,6 @@ export default async function Page() {
       </Stack>
       <SpeedDial
         ariaLabel="Actions"
-        // sx={{ position: "absolute", bottom: 16, right: 16 }}
-        // sx={{ position: "relative", mt: 3, height: 320 }}
         sx={{ position: "fixed", bottom: 64, right: 64 }}
         icon={<SpeedDialIcon />}
       >
@@ -128,7 +125,11 @@ function SourceLink({ source }: { source: { name: string; url: string } }) {
       variant="body2"
       color="text.secondary"
       sx={{
+        overflow: "hidden",
         textOverflow: "ellipsis",
+        display: "-webkit-box",
+        WebkitBoxOrient: "vertical",
+        WebkitLineClamp: "3",
       }}
     >
       {source.name}
