@@ -34,49 +34,15 @@ model Card {
     wordMeaningExamples WordMeaningExample[]
 }
 
-model Word {
-    id                 Int                 @id @default(autoincrement())
-    text               String              @unique
-    createdAt          DateTime            @default(now())
-    updatedAt          DateTime            @updatedAt
-    wordMeanings       WordMeaning[]
-    wordPronunciations WordPronunciation[]
-}
-
-model WordMeaning {
-    id                  Int                  @id @default(autoincrement())
-    explanation         String               @db.Text
-    wordId              Int
-    word                Word                 @relation(fields: [wordId], references: [id], onDelete: Cascade)
-    learnStatus         LearnStatus
-    createdAt           DateTime             @default(now())
-    updatedAt           DateTime             @updatedAt
-    wordMeaningExamples WordMeaningExample[]
-}
-
-model WordPronunciation {
-    id          Int         @id @default(autoincrement())
-    alphabet    String
-    wordId      Int
-    word        Word        @relation(fields: [wordId], references: [id], onDelete: Cascade)
-    learnStatus LearnStatus
-    createdAt   DateTime    @default(now())
-    updatedAt   DateTime    @updatedAt
-}
-
-enum LearnStatus {
-    Learning
-    Mastered
-}
-
 model WordMeaningExample {
-    id            Int         @id @default(autoincrement())
-    wordMeaningId Int
-    wordMeaning   WordMeaning @relation(fields: [wordMeaningId], references: [id], onDelete: Cascade)
+    id            Int      @id @default(autoincrement())
     cardId        Int
-    card          Card        @relation(fields: [cardId], references: [id], onDelete: Cascade)
-    createdAt     DateTime    @default(now())
-    updatedAt     DateTime    @updatedAt
+    card          Card     @relation(fields: [cardId], references: [id], onDelete: Cascade)
+    text          String
+    cardTextStart Int
+    cardTextEnd   Int
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 }
 
 model Source {

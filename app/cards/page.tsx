@@ -16,7 +16,7 @@ import { requireDefaultDesk } from "app/desks/query";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
 import Link from "next/link";
-import { TextFontTheme } from "../../components/TextFontTheme";
+import { TextFontTheme } from "../../components/Theme";
 import { deleteCard } from "./actions";
 
 export default async function Page() {
@@ -44,7 +44,10 @@ export default async function Page() {
                     <CardMedia
                       component={"img"}
                       image={card.imageUrl}
-                      sx={{ height: 140 }}
+                      height={300}
+                      sx={{
+                        width: "50%",
+                      }}
                     />
                   ) : null}
                   <CardContent>

@@ -1,6 +1,16 @@
 import prisma from "lib/prisma";
 import { notFound } from "next/navigation";
-import { Panels } from "./panels";
+
+import { AddComment } from "@mui/icons-material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+} from "@mui/material";
+import { CardText } from "components/CardText";
+import Link from "next/link";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const card = await prisma.card.findUnique({
@@ -8,22 +18,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       id: Number(params.id),
     },
     include: {
-      wordMeaningExamples: {
-        include: {
-          wordMeaning: {
-            select: {
-              id: true,
-              explanation: true,
-              word: {
-                select: {
-                  id: true,
-                  text: true,
-                },
-              },
-            },
-          },
-        },
-      },
+      wordMeaningExamples: true,
     },
   });
   if (!card) {
@@ -38,5 +33,31 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
   });
 
-  return <Panels card={card}></Panels>;
+  return (
+    <Card sx={{ height: "fit-content" }}>
+      {card.imageUrl ? (
+        <CardMedia
+          component={"img"}
+          image={card.imageUrl}
+          height={300}
+          sx={{ objectFit: "contain" }}
+        />
+      ) : null}
+      <CardContent>
+        <CardText
+          text={card.text}
+          wordMeaningExamples={card.wordMeaningExamples}
+        />
+      </CardContent>
+      <CardActions>
+        <Button
+          startIcon={<AddComment />}
+          component={Link}
+          href={`/cards/${card.id}/examples`}
+        >
+          Add Word Examples
+        </Button>
+      </CardActions>
+    </Card>
+  );
 }
