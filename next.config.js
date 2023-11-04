@@ -1,22 +1,14 @@
 module.exports = {
   output: "standalone",
-  experimental: {
-    serverActions: true,
-    swcPlugins: [
-      [
-        "next-superjson-plugin",
-        {
-          excluded: [],
-        },
-      ],
-    ],
-  },
   modularizeImports: {
     "@mui/material": {
       transform: "@mui/material/{{member}}",
     },
     "@mui/icons-material": {
       transform: "@mui/icons-material/{{member}}",
+    },
+    "@mui/lab": {
+      transform: "@mui/lab/{{member}}",
     },
   },
   async headers() {
