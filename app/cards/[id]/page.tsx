@@ -2,13 +2,8 @@ import prisma from "lib/prisma";
 import { notFound } from "next/navigation";
 
 import { AddComment } from "@mui/icons-material";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-} from "@mui/material";
+import { Button, Card, CardActions, CardContent } from "@mui/material";
+import { CardImage } from "components/CardImage";
 import { CardText } from "components/CardText";
 import Link from "next/link";
 
@@ -34,15 +29,8 @@ export default async function Page({ params }: { params: { id: string } }) {
   });
 
   return (
-    <Card sx={{ height: "fit-content" }}>
-      {card.imageUrl ? (
-        <CardMedia
-          component={"img"}
-          image={card.imageUrl}
-          height={300}
-          sx={{ objectFit: "contain" }}
-        />
-      ) : null}
+    <Card>
+      {card.imageUrl ? <CardImage imageUrl={card.imageUrl} /> : null}
       <CardContent>
         <CardText
           text={card.text}

@@ -36,6 +36,7 @@ export function ExampleList({
               <ListItemText
                 primary={example.text}
                 secondary={dayjs(example.createdAt).format("YYYY/MM/DD")}
+                sx={{ minWidth: 400 }}
               />
             </ListItem>
           </form>

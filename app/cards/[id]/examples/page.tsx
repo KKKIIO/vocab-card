@@ -1,7 +1,8 @@
 import prisma from "lib/prisma";
 import { notFound } from "next/navigation";
 
-import { Box, Card, CardContent, CardMedia, Divider } from "@mui/material";
+import { Card, CardContent, Stack } from "@mui/material";
+import { CardImage } from "components/CardImage";
 import { CardExamplePicker } from "./CardExamplePicker";
 import { ExampleList } from "./ExampleList";
 
@@ -19,27 +20,19 @@ export default async function Page({ params }: { params: { id: string } }) {
   }
 
   return (
-    <Box>
-      <Card sx={{ height: "fit-content" }}>
-        {card.imageUrl ? (
-          <CardMedia
-            component={"img"}
-            image={card.imageUrl}
-            height={300}
-            sx={{ objectFit: "contain" }}
-          />
-        ) : null}
+    <Stack direction="row" spacing={2}>
+      <Card>
+        {card.imageUrl ? <CardImage imageUrl={card.imageUrl} /> : null}
         <CardExamplePicker
           cardId={card.id}
           text={card.text}
         ></CardExamplePicker>
       </Card>
-      <Divider />
-      <Card sx={{ maxWidth: 600 }}>
+      <Card>
         <CardContent>
           <ExampleList wordMeaningExamples={card.wordMeaningExamples} />
         </CardContent>
       </Card>
-    </Box>
+    </Stack>
   );
 }

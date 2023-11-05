@@ -1,3 +1,5 @@
+import { ZodError } from "zod";
+
 export interface SuccessResponse {
   data: any;
 }
@@ -18,4 +20,10 @@ export function GetApiError(response: Response): ApiError | null {
     return response.error;
   }
   return null;
+}
+
+export function MakeValidateError(e: ZodError): ApiError {
+  return {
+    message: JSON.stringify(e),
+  };
 }
