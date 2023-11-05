@@ -1,4 +1,4 @@
-import { Delete, QuestionMark } from "@mui/icons-material";
+import { Add, Delete, QuestionMark } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -8,6 +8,9 @@ import {
   CardMedia,
   IconButton,
   Link as MuiLink,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
   Stack,
   Typography,
 } from "@mui/material";
@@ -32,63 +35,89 @@ export default async function Page() {
   });
 
   return (
-    <Stack spacing={2}>
-      {cards.map((card) => {
-        const source = card.source;
-        return (
-          <Card key={card.id}>
-            <Stack direction="row">
-              <CardActionArea component={Link} href={`/cards/${card.id}`}>
-                <Stack direction="row">
-                  {card.imageUrl ? (
-                    <CardMedia
-                      component={"img"}
-                      image={card.imageUrl}
-                      height={300}
+    <>
+      {" "}
+      <Stack spacing={2}>
+        {cards.map((card) => {
+          const source = card.source;
+          return (
+            <Card key={card.id}>
+              <Stack direction="row">
+                <CardActionArea component={Link} href={`/cards/${card.id}`}>
+                  <Stack direction="row">
+                    {card.imageUrl ? (
+                      <CardMedia
+                        component={"img"}
+                        image={card.imageUrl}
+                        height={300}
+                        sx={{
+                          width: "50%",
+                        }}
+                      />
+                    ) : null}
+                    <CardContent>
+                      <ThemeProvider theme={TextFontTheme}>
+                        <Typography>{card.text}</Typography>
+                      </ThemeProvider>
+                    </CardContent>
+                  </Stack>
+                </CardActionArea>
+                <Box
+                  sx={{
+                    padding: 1,
+                    width: 150,
+                  }}
+                >
+                  <Stack direction="row">
+                    <Box
                       sx={{
-                        width: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mr: "auto",
+                        padding: 1,
                       }}
-                    />
-                  ) : null}
-                  <CardContent>
-                    <ThemeProvider theme={TextFontTheme}>
-                      <Typography>{card.text}</Typography>
-                    </ThemeProvider>
-                  </CardContent>
-                </Stack>
-              </CardActionArea>
-              <Box
-                sx={{
-                  padding: 1,
-                  width: 150,
-                }}
-              >
-                <Stack direction="row">
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      mr: "auto",
-                      padding: 1,
-                    }}
-                  >
-                    <SourceAvatar source={source} />
-                  </Box>
-                  <form action={deleteCard}>
-                    <input type="hidden" name="id" value={card.id} />
-                    <IconButton type="submit">
-                      <Delete />
-                    </IconButton>
-                  </form>
-                </Stack>
-                {source ? <SourceLink source={source}></SourceLink> : null}
-              </Box>
-            </Stack>
-          </Card>
-        );
-      })}
-    </Stack>
+                    >
+                      <SourceAvatar source={source} />
+                    </Box>
+                    <form action={deleteCard}>
+                      <input type="hidden" name="id" value={card.id} />
+                      <IconButton type="submit">
+                        <Delete />
+                      </IconButton>
+                    </form>
+                  </Stack>
+                  {source ? <SourceLink source={source}></SourceLink> : null}
+                </Box>
+              </Stack>
+            </Card>
+          );
+        })}
+      </Stack>
+      <SpeedDial
+        ariaLabel="Actions"
+        // sx={{ position: "absolute", bottom: 16, right: 16 }}
+        // sx={{ position: "relative", mt: 3, height: 320 }}
+        sx={{ position: "fixed", bottom: 64, right: 64 }}
+        icon={<SpeedDialIcon />}
+      >
+        <SpeedDialAction
+          icon={
+            // SpeedDialAction with link
+            // see https://stackoverflow.com/questions/60522401/speeddialaction-with-react-router-dom-link#comment111619674_60525523
+            <Link
+              href="/cards/add"
+              style={{
+                display: "flex",
+              }}
+            >
+              <Add />
+            </Link>
+          }
+          tooltipTitle="Add Card"
+        />
+      </SpeedDial>
+    </>
   );
 }
 
