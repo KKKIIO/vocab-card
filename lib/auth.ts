@@ -17,7 +17,7 @@ const providers: Provider[] = [
   }),
 ];
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV === "development") {
   providers.push(
     EmailProvider({
       server: process.env.EMAIL_SERVER,
