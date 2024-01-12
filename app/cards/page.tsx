@@ -1,12 +1,13 @@
-import { Add, Delete, QuestionMark } from "@mui/icons-material";
+import { Style } from "@mui/icons-material";
 import {
-  Avatar,
   Box,
+  Button,
   Card,
   CardActionArea,
   CardContent,
+  CardHeader,
   CardMedia,
-  IconButton,
+  MenuItem,
   Link as MuiLink,
   SpeedDial,
   SpeedDialAction,
@@ -16,29 +17,51 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { requireDefaultDesk } from "app/desks/query";
+import { CardMenuActions } from "components/CardMenuActions";
+import { SourceAvatar } from "components/SourceAvatar";
+import { TextFontTheme } from "components/Theme";
+import dayjs from "dayjs";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
 import Link from "next/link";
-import { TextFontTheme } from "../../components/Theme";
+import { CardsPagination } from "./CardsPagination";
 import { deleteCard } from "./actions";
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: {
+    page?: string;
+  };
+}) {
   const user = await authenticatedUser();
   const desk = await requireDefaultDesk(user.id);
+  const pageSize = 5;
+  const cardCount = await prisma.card.count({
+    where: { deskId: desk.id },
+  });
+  let page = 1;
+  if (searchParams?.page) {
+    const requestPage = Number.parseInt(searchParams.page, 10);
+    if (requestPage > 0) {
+      page = requestPage;
+    }
+  }
   const cards = await prisma.card.findMany({
     where: { deskId: desk.id },
     include: {
       source: true,
     },
     orderBy: [{ createdAt: "desc" }],
-    take: 10,
+    take: pageSize,
+    skip: (page - 1) * pageSize,
   });
+  const pageCount = Math.ceil(cardCount / pageSize);
 
   return (
     <>
       <Stack spacing={2}>
         {cards.map((card) => {
-          const source = card.source;
           return (
             <Card key={card.id}>
               <Stack direction="row">
@@ -61,37 +84,43 @@ export default async function Page() {
                     </CardContent>
                   </Stack>
                 </CardActionArea>
-                <Box
-                  sx={{
-                    padding: 1,
-                    width: "15%",
-                  }}
-                >
-                  <Stack direction="row">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        mr: "auto",
-                        padding: 1,
-                      }}
-                    >
-                      <SourceAvatar source={source} />
-                    </Box>
-                    <form action={deleteCard}>
-                      <input type="hidden" name="id" value={card.id} />
-                      <IconButton type="submit">
-                        <Delete />
-                      </IconButton>
-                    </form>
-                  </Stack>
-                  {source ? <SourceLink source={source}></SourceLink> : null}
+                <Box sx={{ width: "20%" }}>
+                  <CardHeader
+                    avatar={<SourceAvatar source={card.source} />}
+                    action={
+                      <CardMenuActions>
+                        <MenuItem
+                          key={"edit"}
+                          component={Link}
+                          href={`/cards/${card.id}/edit`}
+                        >
+                          Edit
+                        </MenuItem>
+                        <form action={deleteCard}>
+                          <input type="hidden" name="id" value={card.id} />
+                          <MenuItem
+                            key={"delete"}
+                            component={Button}
+                            type="submit"
+                          >
+                            Delete
+                          </MenuItem>
+                        </form>
+                      </CardMenuActions>
+                    }
+                    title={
+                      card.source ? (
+                        <SourceLink source={card.source}></SourceLink>
+                      ) : null
+                    }
+                    subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
+                  />
                 </Box>
               </Stack>
             </Card>
           );
         })}
+        <CardsPagination pageCount={pageCount} />
       </Stack>
       <SpeedDial
         ariaLabel="Actions"
@@ -108,7 +137,7 @@ export default async function Page() {
                 display: "flex",
               }}
             >
-              <Add />
+              <Style color="primary" />
             </Link>
           }
           tooltipTitle="Add Card"
@@ -129,32 +158,10 @@ function SourceLink({ source }: { source: { name: string; url: string } }) {
         textOverflow: "ellipsis",
         display: "-webkit-box",
         WebkitBoxOrient: "vertical",
-        WebkitLineClamp: "3",
+        WebkitLineClamp: "4",
       }}
     >
       {source.name}
     </MuiLink>
-  );
-}
-
-function SourceAvatar({ source }: { source: { url: string } | null }) {
-  return source ? (
-    (() => {
-      const hostname = new URL(source.url).hostname;
-      return (
-        <Avatar
-          alt={`${hostname} icon`}
-          src={`https://icon.horse/icon/${hostname}?size=small`}
-          sx={{
-            width: 24,
-            height: 24,
-          }}
-        />
-      );
-    })()
-  ) : (
-    <Avatar>
-      <QuestionMark />
-    </Avatar>
   );
 }

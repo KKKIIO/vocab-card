@@ -8,22 +8,23 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 
-const createCardSchema = zfd.formData({
+const editCardSchema = zfd.formData({
+  id: zfd.numeric(),
   sourceName: zfd.text(z.string().optional()),
   sourceUrl: zfd.text(z.string().url().optional()),
   text: zfd.text(),
   imageUrl: zfd.text(z.string().url().optional()),
 });
 
-export async function createCard(
+export async function editCard(
   _: Response,
   formData: FormData
 ): Promise<Response> {
-  const parsed = createCardSchema.safeParse(formData);
+  const parsed = editCardSchema.safeParse(formData);
   if (!parsed.success) {
     return { error: MakeValidateError(parsed.error) };
   }
-  const { sourceName, sourceUrl, text, imageUrl } = parsed.data;
+  const { id, sourceName, sourceUrl, text, imageUrl } = parsed.data;
   const userId = (await authenticatedUser()).id;
   const desk = await requireDefaultDesk(userId);
   let source: { name: string; url: string } | null = null;
@@ -50,13 +51,14 @@ export async function createCard(
         })
       ).id
     : null;
-  const card = await prisma.card.create({
+  const card = await prisma.card.update({
     data: {
       deskId,
       text,
       imageUrl,
       sourceId,
     },
+    where: { id, deskId },
   });
   revalidatePath("/cards");
   redirect(`/cards/${card.id}`);
