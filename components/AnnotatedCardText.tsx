@@ -1,12 +1,11 @@
 import { Typography } from "@mui/material";
 import { ClientThemeProvider, TextFontTheme } from "components/Theme";
 
-export type WordMeaningExampleProps = {
+type WordMeaningExampleProps = {
   id: number;
   text: string;
   cardTextStart: number;
   cardTextEnd: number;
-  createdAt: Date;
 };
 
 function splitByExamples(
@@ -28,7 +27,7 @@ function splitByExamples(
   return result;
 }
 
-export function CardText({
+export function AnnotatedCardText({
   text,
   wordMeaningExamples,
 }: {

@@ -1,11 +1,15 @@
 "use client";
 import { Delete } from "@mui/icons-material";
 import { Alert, IconButton, List, ListItem, ListItemText } from "@mui/material";
-import { WordMeaningExampleProps } from "components/CardText";
-import dayjs from "dayjs";
+import { DefaultResponse, GetApiError } from "lib/response";
 import { useFormState, useFormStatus } from "react-dom";
-import { DefaultResponse, GetApiError } from "../../../../lib/response";
 import { deleteExample } from "./actions";
+
+type WordMeaningExampleProps = {
+  id: number;
+  text: string;
+  createDate: string;
+};
 
 export function ExampleList({
   wordMeaningExamples,
@@ -35,7 +39,7 @@ export function ExampleList({
             >
               <ListItemText
                 primary={example.text}
-                secondary={dayjs(example.createdAt).format("YYYY/MM/DD")}
+                secondary={example.createDate}
                 sx={{ minWidth: 400 }}
               />
             </ListItem>
