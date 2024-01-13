@@ -21,11 +21,11 @@ import { CardMenuActions } from "components/CardMenuActions";
 import { SourceAvatar } from "components/SourceAvatar";
 import { TextFontTheme } from "components/Theme";
 import dayjs from "dayjs";
+import { deleteCard } from "lib/actions";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
 import Link from "next/link";
 import { CardsPagination } from "./CardsPagination";
-import { deleteCard } from "./actions";
 
 export default async function Page({
   searchParams,
