@@ -1,7 +1,7 @@
 import prisma from "lib/prisma";
 import { notFound } from "next/navigation";
 
-import { AddComment, MoreVert } from "@mui/icons-material";
+import { AddComment } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -9,13 +9,15 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
-  IconButton,
+  MenuItem,
   Stack,
 } from "@mui/material";
 import { AnnotatedCardText } from "components/AnnotatedCardText";
 import { SourceAvatar } from "components/SourceAvatar";
 import dayjs from "dayjs";
 import Link from "next/link";
+import { CardMenuActions } from "components/CardMenuActions";
+import { deleteCard } from "lib/actions";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const card = await prisma.card.findUnique({
@@ -56,9 +58,21 @@ export default async function Page({ params }: { params: { id: string } }) {
           <CardHeader
             avatar={<SourceAvatar source={card.source} />}
             action={
-              <IconButton aria-label="settings">
-                <MoreVert />
-              </IconButton>
+              <CardMenuActions>
+                <MenuItem
+                  key={"edit"}
+                  component={Link}
+                  href={`/cards/${card.id}/edit`}
+                >
+                  Edit
+                </MenuItem>
+                <form action={deleteCard}>
+                  <input type="hidden" name="id" value={card.id} />
+                  <MenuItem key={"delete"} component={Button} type="submit">
+                    Delete
+                  </MenuItem>
+                </form>
+              </CardMenuActions>
             }
             title={card.source?.name ?? ""}
             subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
