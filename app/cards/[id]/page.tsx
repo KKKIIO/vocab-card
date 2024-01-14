@@ -13,11 +13,11 @@ import {
   Stack,
 } from "@mui/material";
 import { AnnotatedCardText } from "components/AnnotatedCardText";
+import { CardMenuActions } from "components/CardMenuActions";
+import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
 import { SourceAvatar } from "components/SourceAvatar";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { CardMenuActions } from "components/CardMenuActions";
-import { deleteCard } from "lib/actions";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const card = await prisma.card.findUnique({
@@ -66,12 +66,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 >
                   Edit
                 </MenuItem>
-                <form action={deleteCard}>
-                  <input type="hidden" name="id" value={card.id} />
-                  <MenuItem key={"delete"} component={Button} type="submit">
-                    Delete
-                  </MenuItem>
-                </form>
+                <DeleteCardMenuItem cardId={card.id} />
               </CardMenuActions>
             }
             title={card.source?.name ?? ""}
