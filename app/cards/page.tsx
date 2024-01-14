@@ -1,7 +1,6 @@
 import { Style } from "@mui/icons-material";
 import {
   Box,
-  Button,
   Card,
   CardActionArea,
   CardContent,
@@ -18,10 +17,10 @@ import {
 import { ThemeProvider } from "@mui/material/styles";
 import { requireDefaultDesk } from "app/desks/query";
 import { CardMenuActions } from "components/CardMenuActions";
+import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
 import { SourceAvatar } from "components/SourceAvatar";
 import { TextFontTheme } from "components/Theme";
 import dayjs from "dayjs";
-import { deleteCard } from "lib/actions";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
 import Link from "next/link";
@@ -96,16 +95,7 @@ export default async function Page({
                         >
                           Edit
                         </MenuItem>
-                        <form action={deleteCard}>
-                          <input type="hidden" name="id" value={card.id} />
-                          <MenuItem
-                            key={"delete"}
-                            component={Button}
-                            type="submit"
-                          >
-                            Delete
-                          </MenuItem>
-                        </form>
+                        <DeleteCardMenuItem cardId={card.id} />
                       </CardMenuActions>
                     }
                     title={
