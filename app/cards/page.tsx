@@ -1,6 +1,5 @@
 import { Style } from "@mui/icons-material";
 import {
-  Box,
   Card,
   CardActionArea,
   CardContent,
@@ -63,54 +62,65 @@ export default async function Page({
         {cards.map((card) => {
           return (
             <Card key={card.id}>
-              <Stack direction="row">
-                <CardActionArea component={Link} href={`/cards/${card.id}`}>
-                  <Stack direction="row">
-                    {card.imageUrl ? (
-                      <CardMedia
-                        component={"img"}
-                        image={card.imageUrl}
-                        height={300}
+              <CardHeader
+                avatar={<SourceAvatar source={card.source} />}
+                action={
+                  <CardMenuActions>
+                    <MenuItem
+                      key={"edit"}
+                      component={Link}
+                      href={`/cards/${card.id}/edit`}
+                    >
+                      Edit
+                    </MenuItem>
+                    <DeleteCardMenuItem cardId={card.id} />
+                  </CardMenuActions>
+                }
+                title={
+                  card.source ? (
+                    <SourceLink source={card.source}></SourceLink>
+                  ) : null
+                }
+                subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
+              />
+
+              <CardActionArea component={Link} href={`/cards/${card.id}`}>
+                <Stack
+                  direction={{
+                    xs: "column",
+                    md: "row",
+                  }}
+                >
+                  {card.imageUrl ? (
+                    <CardMedia
+                      component={"img"}
+                      image={card.imageUrl}
+                      height={300}
+                      sx={{
+                        width: {
+                          xs: "100%",
+                          md: "50%",
+                        },
+                      }}
+                    />
+                  ) : null}
+                  <CardContent>
+                    <ThemeProvider theme={TextFontTheme}>
+                      <Typography
                         sx={{
-                          width: "50%",
+                          p: 2,
                         }}
-                      />
-                    ) : null}
-                    <CardContent>
-                      <ThemeProvider theme={TextFontTheme}>
-                        <Typography>{card.text}</Typography>
-                      </ThemeProvider>
-                    </CardContent>
-                  </Stack>
-                </CardActionArea>
-                <Box sx={{ width: "20%" }}>
-                  <CardHeader
-                    avatar={<SourceAvatar source={card.source} />}
-                    action={
-                      <CardMenuActions>
-                        <MenuItem
-                          key={"edit"}
-                          component={Link}
-                          href={`/cards/${card.id}/edit`}
-                        >
-                          Edit
-                        </MenuItem>
-                        <DeleteCardMenuItem cardId={card.id} />
-                      </CardMenuActions>
-                    }
-                    title={
-                      card.source ? (
-                        <SourceLink source={card.source}></SourceLink>
-                      ) : null
-                    }
-                    subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
-                  />
-                </Box>
-              </Stack>
+                      >
+                        {card.text}
+                      </Typography>
+                    </ThemeProvider>
+                  </CardContent>
+                </Stack>
+              </CardActionArea>
             </Card>
           );
         })}
-        <CardsPagination pageCount={pageCount} />
+        <CardsPagination count={pageCount} defaultPage={page} />
       </Stack>
       <SpeedDial
         ariaLabel="Actions"

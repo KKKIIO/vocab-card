@@ -2,10 +2,17 @@
 import { Pagination, PaginationItem } from "@mui/material";
 import Link from "next/link";
 
-export function CardsPagination({ pageCount }: { pageCount: number }) {
+export function CardsPagination({
+  count,
+  defaultPage,
+}: {
+  count: number;
+  defaultPage: number;
+}) {
   return (
     <Pagination
-      count={pageCount}
+      count={count}
+      defaultPage={defaultPage}
       shape="rounded"
       sx={{
         alignSelf: "center",

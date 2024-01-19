@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { AddComment } from "@mui/icons-material";
 import {
+  Box,
   Button,
   Card,
   CardActions,
@@ -43,42 +44,50 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     <Card>
-      <Stack direction="row" justifyContent="space-between">
+      <CardHeader
+        avatar={<SourceAvatar source={card.source} />}
+        action={
+          <CardMenuActions>
+            <MenuItem
+              key={"edit"}
+              component={Link}
+              href={`/cards/${card.id}/edit`}
+            >
+              Edit
+            </MenuItem>
+            <DeleteCardMenuItem cardId={card.id} />
+          </CardMenuActions>
+        }
+        title={card.source?.name ?? ""}
+        subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
+      />
+      <Stack
+        direction={{
+          xs: "column",
+          sm: "row",
+        }}
+      >
         {card.imageUrl ? (
           <CardMedia
             component={"img"}
             image={card.imageUrl}
             title="card image"
             sx={{
-              maxWidth: "50%",
+              width: {
+                xs: "100%",
+                md: "50%",
+              },
             }}
           />
         ) : null}
-        <Stack direction="column" flexGrow={1}>
-          <CardHeader
-            avatar={<SourceAvatar source={card.source} />}
-            action={
-              <CardMenuActions>
-                <MenuItem
-                  key={"edit"}
-                  component={Link}
-                  href={`/cards/${card.id}/edit`}
-                >
-                  Edit
-                </MenuItem>
-                <DeleteCardMenuItem cardId={card.id} />
-              </CardMenuActions>
-            }
-            title={card.source?.name ?? ""}
-            subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
-          />
-          <CardContent>
+        <CardContent>
+          <Box sx={{ p: 2 }}>
             <AnnotatedCardText
               text={card.text}
               wordMeaningExamples={card.wordMeaningExamples}
             />
-          </CardContent>
-        </Stack>
+          </Box>
+        </CardContent>
       </Stack>
       <CardActions>
         <Button
