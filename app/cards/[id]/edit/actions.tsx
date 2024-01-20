@@ -43,7 +43,9 @@ export async function editCard(
     ? (
         await prisma.source.upsert({
           where: { deskId_url: { deskId, url: source.url } },
-          update: {},
+          update: {
+            name: source.name,
+          },
           create: {
             ...source,
             deskId,
