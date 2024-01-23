@@ -2,9 +2,10 @@
 import { MoreVert } from "@mui/icons-material";
 import { IconButton, Menu } from "@mui/material";
 import { MouseEvent, useState } from "react";
+import { CloseMenuContext } from "./CloseMenuContext";
 
 const ITEM_HEIGHT = 48;
-export function CardMenuActions({ children }) {
+export function CardActionsMenu({ children }) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -33,10 +34,6 @@ export function CardMenuActions({ children }) {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        sx={{
-          maxHeight: ITEM_HEIGHT * 4.5,
-          width: "20ch",
-        }}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "right",
@@ -46,7 +43,9 @@ export function CardMenuActions({ children }) {
           horizontal: "right",
         }}
       >
-        {children}
+        <CloseMenuContext.Provider value={handleClose}>
+          {children}
+        </CloseMenuContext.Provider>
       </Menu>
     </div>
   );

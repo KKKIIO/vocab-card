@@ -14,7 +14,7 @@ import {
   Stack,
 } from "@mui/material";
 import { AnnotatedCardText } from "components/AnnotatedCardText";
-import { CardMenuActions } from "components/CardMenuActions";
+import { CardActionsMenu } from "components/CardActionsMenu";
 import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
 import { SourceAvatar } from "components/SourceAvatar";
 import dayjs from "dayjs";
@@ -47,7 +47,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       <CardHeader
         avatar={<SourceAvatar source={card.source} />}
         action={
-          <CardMenuActions>
+          <CardActionsMenu>
             <MenuItem
               key={"edit"}
               component={Link}
@@ -56,7 +56,7 @@ export default async function Page({ params }: { params: { id: string } }) {
               Edit
             </MenuItem>
             <DeleteCardMenuItem cardId={card.id} />
-          </CardMenuActions>
+          </CardActionsMenu>
         }
         title={card.source?.name ?? ""}
         subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}

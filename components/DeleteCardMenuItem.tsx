@@ -10,6 +10,7 @@ export function DeleteCardMenuItem({ cardId }: { cardId: number }) {
         component={Button}
         type="submit"
         sx={{
+          width: "100%",
           textTransform: "none",
         }}
       >

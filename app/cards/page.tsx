@@ -15,7 +15,8 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { requireDefaultDesk } from "app/desks/query";
-import { CardMenuActions } from "components/CardMenuActions";
+import { CardActionsMenu } from "components/CardActionsMenu";
+import { CopyCardJsonMenuItem } from "components/CopyCardJsonMenuItem";
 import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
 import { SourceAvatar } from "components/SourceAvatar";
 import { TextFontTheme } from "components/Theme";
@@ -65,7 +66,7 @@ export default async function Page({
               <CardHeader
                 avatar={<SourceAvatar source={card.source} />}
                 action={
-                  <CardMenuActions>
+                  <CardActionsMenu>
                     <MenuItem
                       key={"edit"}
                       component={Link}
@@ -74,7 +75,8 @@ export default async function Page({
                       Edit
                     </MenuItem>
                     <DeleteCardMenuItem cardId={card.id} />
-                  </CardMenuActions>
+                    <CopyCardJsonMenuItem card={card} />
+                  </CardActionsMenu>
                 }
                 title={
                   card.source ? (
