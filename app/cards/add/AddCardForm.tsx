@@ -25,10 +25,10 @@ export function AddCardForm() {
             Add Card
           </Typography>
           <Grid container spacing={2} sx={{ width: "100%" }}>
-            <Grid item xs={4}>
+            <Grid item xs={12}>
               <TextField name="sourceName" label="Source Name" fullWidth />
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={12}>
               <TextField name="sourceUrl" label="Source URL" fullWidth />
             </Grid>
             <Grid item xs={12}>
