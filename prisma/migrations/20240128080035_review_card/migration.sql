@@ -43,6 +43,8 @@ ADD CONSTRAINT "ReviewItem_cardId_fkey" FOREIGN KEY ("cardId") REFERENCES "Card"
 ALTER TABLE "ReviewItemLog"
 ADD CONSTRAINT "ReviewItemLog_reviewItemId_fkey" FOREIGN KEY ("reviewItemId") REFERENCES "ReviewItem" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+-- CUSTOM:
+
 -- Insert all cards into ReviewItem
 INSERT INTO
     "ReviewItem" (

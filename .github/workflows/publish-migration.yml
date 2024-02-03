@@ -9,11 +9,11 @@ on:
 env:
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}-migrate
+  IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}-migrate
 permissions:
   packages: write
 jobs:
-  publish-app:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
