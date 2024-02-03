@@ -32,6 +32,7 @@ model Card {
     createdAt           DateTime             @default(now())
     updatedAt           DateTime             @updatedAt
     wordMeaningExamples WordMeaningExample[]
+    ReviewItem          ReviewItem[]
 }
 
 model WordMeaningExample {
@@ -86,14 +87,15 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String       @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?      @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
-    Desk          Desk[]
+    desks         Desk[]
+    ReviewItem    ReviewItem[]
 }
 
 model VerificationToken {
@@ -102,4 +104,33 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model ReviewItem {
+    id             Int             @id @default(autoincrement())
+    userId         String
+    user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    cardId         Int
+    card           Card            @relation(fields: [cardId], references: [id], onDelete: Cascade)
+    nextReviewDate DateTime        @db.Date
+    createdAt      DateTime        @default(now())
+    updatedAt      DateTime        @updatedAt
+    reviewItemLog  ReviewItemLog[]
+
+    @@unique([userId, cardId])
+    @@index([userId, nextReviewDate, createdAt])
+}
+
+model ReviewItemLog {
+    id           Int        @id @default(autoincrement())
+    reviewItemId Int
+    reviewItem   ReviewItem @relation(fields: [reviewItemId], references: [id], onDelete: Cascade)
+    difficulty   Difficulty
+    createdAt    DateTime   @default(now())
+}
+
+enum Difficulty {
+    TRIVIAL
+    MEDIUM
+    HARD
 }

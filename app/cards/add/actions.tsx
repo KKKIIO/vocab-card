@@ -1,4 +1,5 @@
 "use server";
+import { createCard } from "app/api/cards/core";
 import { requireDefaultDesk } from "app/desks/query";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
@@ -15,7 +16,7 @@ const createCardSchema = zfd.formData({
   imageUrl: zfd.text(z.string().url().optional()),
 });
 
-export async function createCard(
+export async function createCardAction(
   _: Response,
   formData: FormData
 ): Promise<Response> {
@@ -50,13 +51,11 @@ export async function createCard(
         })
       ).id
     : null;
-  const card = await prisma.card.create({
-    data: {
-      deskId,
-      text,
-      imageUrl,
-      sourceId,
-    },
+  const card = await createCard({
+    desk,
+    text,
+    imageUrl,
+    sourceId,
   });
   revalidatePath("/cards");
   redirect(`/cards/${card.id}`);

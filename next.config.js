@@ -14,6 +14,15 @@ module.exports = {
   async headers() {
     return [
       {
+        source: "/:path*",
+        headers: [
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+        ],
+      },
+      {
         // matching all API routes
         source: "/api/:path*",
         headers: [

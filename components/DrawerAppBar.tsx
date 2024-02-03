@@ -1,5 +1,5 @@
 "use client";
-import { Home, Lightbulb } from "@mui/icons-material";
+import { Folder, Lightbulb } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ListItemIcon } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
@@ -19,8 +19,8 @@ import { UserAvatar } from "./UserAvatar";
 
 const drawerWidth = 240;
 const LINKS = [
-  { text: "Home", href: "/", icon: Home },
-  { text: "Cards", href: "/cards", icon: Lightbulb },
+  { text: "Cards", href: "/cards", icon: Folder },
+  { text: "Review", href: "/review", icon: Lightbulb },
 ];
 const title = "Vocab Card";
 
