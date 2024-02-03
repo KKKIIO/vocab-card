@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from "lib/dayjs";
 import prisma from "lib/prisma";
 import { notFound } from "next/navigation";
 
@@ -26,7 +26,6 @@ export default async function Page({ params }: { params: { id: string } }) {
           <CardMedia
             component={"img"}
             image={card.imageUrl}
-            title="card image"
             sx={{
               maxHeight: "70%",
             }}

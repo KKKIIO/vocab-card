@@ -12,10 +12,10 @@ import {
 import { SubmitButton } from "components/SubmitButton";
 import { DefaultResponse, GetApiError } from "lib/response";
 import { useFormState } from "react-dom";
-import { createCard } from "./actions";
+import { createCardAction } from "./actions";
 
 export function AddCardForm() {
-  const [state, action] = useFormState(createCard, DefaultResponse());
+  const [state, action] = useFormState(createCardAction, DefaultResponse());
   const errorMsg = GetApiError(state)?.message;
   return (
     <form action={action}>

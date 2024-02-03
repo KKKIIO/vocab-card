@@ -17,7 +17,7 @@ import { AnnotatedCardText } from "components/AnnotatedCardText";
 import { CardActionsMenu } from "components/CardActionsMenu";
 import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
 import { SourceAvatar } from "components/SourceAvatar";
-import dayjs from "dayjs";
+import dayjs from "lib/dayjs";
 import Link from "next/link";
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: { id: string } }) {
       id: card.id,
     },
     data: {
-      lastReviewedAt: new Date(),
+      lastReviewedAt: dayjs().toDate(),
     },
   });
 
@@ -71,7 +71,6 @@ export default async function Page({ params }: { params: { id: string } }) {
           <CardMedia
             component={"img"}
             image={card.imageUrl}
-            title="card image"
             sx={{
               width: {
                 xs: "100%",

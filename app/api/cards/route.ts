@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { requireDefaultDesk } from "../../desks/query";
+import { createCard } from "./core";
 
 const createSchema = z.object({
   text: z.string().min(1).max(1000),
@@ -34,14 +35,7 @@ export async function POST(request: NextRequest) {
         })
       ).id
     : null;
-  const card = await prisma.card.create({
-    data: {
-      deskId,
-      text,
-      imageUrl,
-      sourceId,
-    },
-  });
+  const card = await createCard({ text, imageUrl, sourceId, desk: desk });
   revalidatePath("/cards");
   return NextResponse.json({ data: card });
 }
