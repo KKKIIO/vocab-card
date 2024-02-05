@@ -27,7 +27,11 @@ export default async function Page({ params }: { params: { id: string } }) {
     },
     include: {
       source: true,
-      wordMeaningExamples: true,
+      wordMeaningExamples: {
+        orderBy: {
+          cardTextStart: "asc"
+        }
+      }
     },
   });
   if (!card) {

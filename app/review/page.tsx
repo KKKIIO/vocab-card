@@ -21,7 +21,7 @@ import dayjs from "lib/dayjs";
 import prisma from "lib/prisma";
 import { reviewCardAction } from "./actions";
 
-export default async function Page({}) {
+export default async function Page({ }) {
   const user = await authenticatedUser();
   const today = dayjs();
   const nextReviewItem = await prisma.reviewItem.findFirst({
@@ -36,7 +36,11 @@ export default async function Page({}) {
       card: {
         include: {
           source: true,
-          wordMeaningExamples: true,
+          wordMeaningExamples: {
+            orderBy: {
+              cardTextStart: "asc"
+            }
+          },
         },
       },
     },
