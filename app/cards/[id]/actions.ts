@@ -1,9 +1,8 @@
 "use server";
 import prisma from "lib/prisma";
-import { MakeValidateError } from "lib/response";
+import { DefaultResponse, MakeValidateError, Response } from "lib/response";
 import { revalidatePath } from "next/cache";
 import { zfd } from "zod-form-data";
-import { DefaultResponse, Response } from "../../../../lib/response";
 const createExampleSchema = zfd.formData({
   cardId: zfd.numeric(),
   cardTextStart: zfd.numeric(),

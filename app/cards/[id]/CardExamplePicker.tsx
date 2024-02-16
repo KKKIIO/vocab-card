@@ -5,8 +5,8 @@ import { Alert, CardActions, CardContent, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
 import { ClientThemeProvider, TextFontTheme } from "components/Theme";
+import { DefaultResponse, GetApiError } from "lib/response";
 import { useFormState, useFormStatus } from "react-dom";
-import { DefaultResponse, GetApiError } from "../../../../lib/response";
 import { createExample } from "./actions";
 
 export function CardExamplePicker({
@@ -40,6 +40,7 @@ export function CardExamplePicker({
       <CardActions>
         <LoadingButton
           startIcon={<Add />}
+          variant="contained"
           disabled={!range}
           loading={pending}
           type="submit"
