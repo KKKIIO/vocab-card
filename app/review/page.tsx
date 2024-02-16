@@ -1,18 +1,18 @@
-import { Redo } from "@mui/icons-material";
 import {
   Alert,
   AlertTitle,
+  Badge,
   Box,
+  Button,
   Card,
   CardActionArea,
   CardActions,
   CardContent,
   CardHeader,
   CardMedia,
-  IconButton,
   Link,
   Stack,
-  Typography,
+  Typography
 } from "@mui/material";
 import { AnnotatedCardText } from "components/AnnotatedCardText";
 import { SourceAvatar } from "components/SourceAvatar";
@@ -65,6 +65,16 @@ export default async function Page({ }) {
     },
   });
   const lastReviewDate = lastReviewLog?.createdAt;
+
+  const pendingCount = await prisma.reviewItem.count({
+    where: {
+      userId: user.id,
+      nextReviewDate: {
+        lte: today.toDate(),
+      },
+    },
+  });
+
   const card = nextReviewItem.card;
   return (
     <Card>
@@ -110,9 +120,11 @@ export default async function Page({ }) {
         <form action={reviewCardAction}>
           <input type="hidden" name="id" value={nextReviewItem.id} />
           <input type="hidden" name="difficulty" value="MEDIUM" />
-          <IconButton aria-label="Mark as medium" type="submit" color="primary">
-            <Redo />
-          </IconButton>
+          <Button type="submit" variant="outlined" color="primary">
+            <Badge badgeContent={pendingCount} color="primary">
+              Not Sure
+            </Badge>
+          </Button>
         </form>
         {/* <IconButton aria-label="Mark as trivial">
           <Delete />
