@@ -22,8 +22,8 @@ export function GetApiError(response: Response): ApiError | null {
   return null;
 }
 
-export function MakeValidateError(e: ZodError): ApiError {
+export function MakeValidateError<T>(e: ZodError<T>): ApiError {
   return {
-    message: JSON.stringify(e),
+    message: JSON.stringify(e.flatten().fieldErrors),
   };
 }

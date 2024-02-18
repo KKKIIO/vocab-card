@@ -126,9 +126,13 @@ export default async function Page({ }) {
             </Badge>
           </Button>
         </form>
-        {/* <IconButton aria-label="Mark as trivial">
-          <Delete />
-        </IconButton> */}
+        <form action={reviewCardAction}>
+          <input type="hidden" name="id" value={nextReviewItem.id} />
+          <input type="hidden" name="difficulty" value="TRIVIAL" />
+          <Button type="submit" variant="outlined" color="success">
+            Done
+          </Button>
+        </form>
       </CardActions>
     </Card>
   );

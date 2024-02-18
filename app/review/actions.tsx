@@ -34,7 +34,10 @@ export async function reviewCardAction(formData: FormData) {
     return notFound();
   }
   const today = dayjs();
-  const reviewIntervalDays = 7;
+  let reviewIntervalDays = 7;
+  if (difficulty === $Enums.Difficulty.TRIVIAL) {
+    reviewIntervalDays = 100 * 365; // no need to review for a long time
+  }
   await prisma.$transaction([
     prisma.reviewItem.update({
       where: {
