@@ -97,6 +97,7 @@ export default async function Page({ }) {
           {card.imageUrl ? (
             <CardMedia
               component={"img"}
+              key={card.imageUrl}
               image={card.imageUrl}
               sx={{
                 width: {
