@@ -97,7 +97,7 @@ export default async function Page({ }) {
           {card.imageUrl ? (
             <CardMedia
               component={"img"}
-              key={card.imageUrl}
+              key={card.imageUrl} // Force re-render when imageUrl changes
               image={card.imageUrl}
               sx={{
                 width: {

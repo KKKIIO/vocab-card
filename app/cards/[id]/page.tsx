@@ -16,6 +16,7 @@ import dayjs from "lib/dayjs";
 import Link from "next/link";
 import { CardExamplePicker } from "./CardExamplePicker";
 import { ExampleList } from "./ExampleList";
+import { SpeechButton } from "./SpeechButton";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const card = await prisma.card.findUnique({
@@ -50,16 +51,19 @@ export default async function Page({ params }: { params: { id: string } }) {
           <CardHeader
             avatar={<SourceAvatar source={card.source} />}
             action={
-              <CardActionsMenu>
-                <MenuItem
-                  key={"edit"}
-                  component={Link}
-                  href={`/cards/${card.id}/edit`}
-                >
-                  Edit
-                </MenuItem>
-                <DeleteCardMenuItem cardId={card.id} />
-              </CardActionsMenu>
+              <>
+                <SpeechButton text={card.text} />
+                <CardActionsMenu>
+                  <MenuItem
+                    key={"edit"}
+                    component={Link}
+                    href={`/cards/${card.id}/edit`}
+                  >
+                    Edit
+                  </MenuItem>
+                  <DeleteCardMenuItem cardId={card.id} />
+                </CardActionsMenu>
+              </>
             }
             title={card.source?.name ?? ""}
             subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
