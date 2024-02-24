@@ -7,7 +7,8 @@ import {
   CardHeader,
   CardMedia,
   Grid,
-  MenuItem
+  MenuItem,
+  Stack
 } from "@mui/material";
 import { CardActionsMenu } from "components/CardActionsMenu";
 import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
@@ -51,7 +52,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           <CardHeader
             avatar={<SourceAvatar source={card.source} />}
             action={
-              <>
+              <Stack direction="row">
                 <SpeechButton text={card.text} />
                 <CardActionsMenu>
                   <MenuItem
@@ -63,7 +64,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                   </MenuItem>
                   <DeleteCardMenuItem cardId={card.id} />
                 </CardActionsMenu>
-              </>
+              </Stack>
             }
             title={card.source?.name ?? ""}
             subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
