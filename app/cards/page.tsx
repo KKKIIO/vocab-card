@@ -3,10 +3,7 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  CardHeader,
   CardMedia,
-  MenuItem,
-  Link as MuiLink,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
@@ -15,13 +12,9 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { requireDefaultDesk } from "app/desks/query";
-import { CardActionsMenu } from "components/CardActionsMenu";
-import { CopyCardJsonMenuItem } from "components/CopyCardJsonMenuItem";
-import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
-import { SourceAvatar } from "components/SourceAvatar";
+import { MyCardHeader } from "components/MyCardHeader";
 import { TextFontTheme } from "components/Theme";
 import { authenticatedUser } from "lib/auth";
-import dayjs from "lib/dayjs";
 import prisma from "lib/prisma";
 import Link from "next/link";
 import { CardsPagination } from "./CardsPagination";
@@ -63,29 +56,7 @@ export default async function Page({
         {cards.map((card) => {
           return (
             <Card key={card.id}>
-              <CardHeader
-                avatar={<SourceAvatar source={card.source} />}
-                action={
-                  <CardActionsMenu>
-                    <MenuItem
-                      key={"edit"}
-                      component={Link}
-                      href={`/cards/${card.id}/edit`}
-                    >
-                      Edit
-                    </MenuItem>
-                    <DeleteCardMenuItem cardId={card.id} />
-                    <CopyCardJsonMenuItem card={card} />
-                  </CardActionsMenu>
-                }
-                title={
-                  card.source ? (
-                    <SourceLink source={card.source}></SourceLink>
-                  ) : null
-                }
-                subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
-              />
-
+              <MyCardHeader card={card} />
               <CardActionArea component={Link} href={`/cards/${card.id}`}>
                 <Stack
                   direction={{
@@ -149,21 +120,3 @@ export default async function Page({
   );
 }
 
-function SourceLink({ source }: { source: { name: string; url: string } }) {
-  return (
-    <MuiLink
-      href={source.url}
-      variant="body2"
-      color="text.secondary"
-      sx={{
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        display: "-webkit-box",
-        WebkitBoxOrient: "vertical",
-        WebkitLineClamp: "4",
-      }}
-    >
-      {source.name}
-    </MuiLink>
-  );
-}

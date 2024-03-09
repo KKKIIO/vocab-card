@@ -6,18 +6,12 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
-  Grid,
-  MenuItem,
-  Stack
+  Grid
 } from "@mui/material";
-import { CardActionsMenu } from "components/CardActionsMenu";
-import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
-import { SourceAvatar } from "components/SourceAvatar";
+import { MyCardHeader } from "components/MyCardHeader";
 import dayjs from "lib/dayjs";
-import Link from "next/link";
 import { CardExamplePicker } from "./CardExamplePicker";
 import { ExampleList } from "./ExampleList";
-import { SpeechButton } from "./SpeechButton";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const card = await prisma.card.findUnique({
@@ -49,26 +43,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
         <Card>
-          <CardHeader
-            avatar={<SourceAvatar source={card.source} />}
-            action={
-              <Stack direction="row">
-                <SpeechButton text={card.text} />
-                <CardActionsMenu>
-                  <MenuItem
-                    key={"edit"}
-                    component={Link}
-                    href={`/cards/${card.id}/edit`}
-                  >
-                    Edit
-                  </MenuItem>
-                  <DeleteCardMenuItem cardId={card.id} />
-                </CardActionsMenu>
-              </Stack>
-            }
-            title={card.source?.name ?? ""}
-            subheader={dayjs(card.createdAt).format("YYYY/MM/DD")}
-          />
+          <MyCardHeader card={card} redirectOnSuccess={"/cards"} />
           {card.imageUrl ? (
             <CardMedia
               component={"img"}
