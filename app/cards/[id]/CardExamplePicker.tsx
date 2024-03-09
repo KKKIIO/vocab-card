@@ -57,7 +57,7 @@ function useTextSelection<T extends Node>() {
   const ref = useRef<T>(null);
 
   // we store info about the current Range here
-  const [range, setRange] = useState<Range | null>(null);
+  const [range, setRange] = useState<FilledRange | null>(null);
 
   // In this effect we're registering for the documents "selectionchange" event
   useEffect(() => {
@@ -78,7 +78,13 @@ function useTextSelection<T extends Node>() {
         return;
       }
 
-      setRange(selection.getRangeAt(0));
+      const range = selection.getRangeAt(0)
+      setRange({
+        startContainer: range.startContainer,
+        startOffset: range.startOffset,
+        endContainer: range.endContainer,
+        endOffset: range.endOffset,
+      });
     }
 
     document.addEventListener("selectionchange", handleChange);
@@ -86,4 +92,11 @@ function useTextSelection<T extends Node>() {
   }, []);
 
   return { range, ref };
+}
+
+interface FilledRange {
+  startContainer: Node;
+  startOffset: number;
+  endContainer: Node;
+  endOffset: number;
 }
