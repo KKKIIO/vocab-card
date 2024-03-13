@@ -41,7 +41,7 @@ export function CardExamplePicker({
         <LoadingButton
           startIcon={<Add />}
           variant="contained"
-          disabled={!range}
+          disabled={!range && !pending}
           loading={pending}
           type="submit"
         >

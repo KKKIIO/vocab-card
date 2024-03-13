@@ -2,10 +2,12 @@
 import { Pagination, PaginationItem } from "@mui/material";
 import Link from "next/link";
 
-export function CardsPagination({
+export function MyPagination({
+  path,
   count,
   defaultPage,
 }: {
+  path: string;
   count: number;
   defaultPage: number;
 }) {
@@ -21,7 +23,7 @@ export function CardsPagination({
         return (
           <PaginationItem
             component={Link}
-            href={`/cards?page=${item.page}`}
+            href={`${path}?page=${item.page}`}
             {...item}
           />
         );

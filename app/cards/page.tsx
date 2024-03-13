@@ -13,11 +13,11 @@ import {
 import { ThemeProvider } from "@mui/material/styles";
 import { requireDefaultDesk } from "app/desks/query";
 import { MyCardHeader } from "components/MyCardHeader";
+import { MyPagination } from "components/MyPagination";
 import { TextFontTheme } from "components/Theme";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
 import Link from "next/link";
-import { CardsPagination } from "./CardsPagination";
 
 export default async function Page({
   searchParams,
@@ -93,7 +93,7 @@ export default async function Page({
             </Card>
           );
         })}
-        <CardsPagination count={pageCount} defaultPage={page} />
+        <MyPagination path={"/cards"} count={pageCount} defaultPage={page} />
       </Stack>
       <SpeedDial
         ariaLabel="Actions"

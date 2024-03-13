@@ -1,5 +1,5 @@
 "use client";
-import { Folder, Lightbulb } from "@mui/icons-material";
+import { Folder, Lightbulb, Source } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ListItemIcon } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
@@ -21,6 +21,7 @@ const drawerWidth = 240;
 const LINKS = [
   { text: "Cards", href: "/cards", icon: Folder },
   { text: "Review", href: "/review", icon: Lightbulb },
+  { text: "Sources", href: "/sources", icon: Source },
 ];
 const title = "Vocab Card";
 
@@ -44,7 +45,7 @@ export function DrawerAppBar({
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
-            // sx={{ mr: 2, display: { sm: "none" } }}
+          // sx={{ mr: 2, display: { sm: "none" } }}
           >
             <MenuIcon />
           </IconButton>

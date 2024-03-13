@@ -31,7 +31,7 @@ export function ExampleList({
                   edge="end"
                   aria-label="delete"
                   type="submit"
-                  aria-disabled={pending}
+                  disabled={pending}
                 >
                   <Delete />
                 </IconButton>
