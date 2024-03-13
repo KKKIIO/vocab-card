@@ -1,4 +1,5 @@
 "use server";
+import { upsertSource } from "app/api/sources/core";
 import { requireDefaultDesk } from "app/desks/query";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
@@ -40,18 +41,7 @@ export async function editCard(
 
   const deskId = desk.id;
   const sourceId = source
-    ? (
-        await prisma.source.upsert({
-          where: { deskId_url: { deskId, url: source.url } },
-          update: {
-            name: source.name,
-          },
-          create: {
-            ...source,
-            deskId,
-          },
-        })
-      ).id
+    ? (await upsertSource({ deskId, ...source, })).id
     : null;
   const card = await prisma.card.update({
     data: {

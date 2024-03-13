@@ -1,8 +1,8 @@
 "use server";
 import { createCard } from "app/api/cards/core";
+import { upsertSource } from "app/api/sources/core";
 import { requireDefaultDesk } from "app/desks/query";
 import { authenticatedUser } from "lib/auth";
-import prisma from "lib/prisma";
 import { MakeValidateError, Response } from "lib/response";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -40,16 +40,7 @@ export async function createCardAction(
 
   const deskId = desk.id;
   const sourceId = source
-    ? (
-        await prisma.source.upsert({
-          where: { deskId_url: { deskId, url: source.url } },
-          update: {},
-          create: {
-            ...source,
-            deskId,
-          },
-        })
-      ).id
+    ? (await upsertSource({ deskId, ...source, })).id
     : null;
   const card = await createCard({
     desk,

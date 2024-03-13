@@ -19,7 +19,7 @@ export async function createCard({
   sourceId,
 }: CreateCardArgs) {
   return await prisma.$transaction(async (tx) => {
-    const card = await prisma.card.create({
+    const card = await tx.card.create({
       data: {
         deskId: desk.id,
         text,
