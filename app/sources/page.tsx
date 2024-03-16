@@ -1,6 +1,7 @@
 
-import { Delete } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import {
+    Button,
     IconButton,
     List,
     ListItem,
@@ -14,6 +15,7 @@ import { MyPagination } from "components/MyPagination";
 import { SourceAvatar } from "components/SourceAvatar";
 import { authenticatedUser } from "lib/auth";
 import prisma from "lib/prisma";
+import Link from "next/link";
 import { deleteSource } from "./actions";
 
 export default async function Page({
@@ -51,6 +53,14 @@ export default async function Page({
 
     return (
         <Stack spacing={2}>
+            <Stack direction="row" justifyContent="flex-end">
+                <Button
+                    component={Link}
+                    href="/sources/add"
+                    variant="contained" startIcon={<Add />}>
+                    Add
+                </Button>
+            </Stack>
             <Paper>
                 <List >
                     {sources.map((source) => {
@@ -88,7 +98,7 @@ export default async function Page({
                 </List>
             </Paper>
             <MyPagination path={"/sources"} count={pageCount} defaultPage={page} />
-        </Stack>
+        </Stack >
 
     );
 }
