@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'prisma/migrations/**'
+      - "prisma/migrations/**"
 env:
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Add your test steps here if needed...
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
