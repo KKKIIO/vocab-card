@@ -1,3 +1,4 @@
+import { OpenInNew } from "@mui/icons-material";
 import {
   Alert,
   AlertTitle,
@@ -5,11 +6,11 @@ import {
   Box,
   Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   CardHeader,
   CardMedia,
+  IconButton,
   Link,
   Stack,
   Typography
@@ -86,37 +87,45 @@ export default async function Page({ }) {
             ? `Last reviewed ${dayjs(lastReviewDate).fromNow()}`
             : `Created ${dayjs(card.createdAt).fromNow()}`
         }
+        action={
+          <IconButton
+            component={Link}
+            href={`/cards/${card.id}`}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <OpenInNew />
+          </IconButton>
+        }
       />
-      <CardActionArea component={Link} href={`/cards/${card.id}`}>
-        <Stack
-          direction={{
-            xs: "column",
-            sm: "row",
-          }}
-        >
-          {card.imageUrl ? (
-            <CardMedia
-              component={"img"}
-              key={card.imageUrl} // Force re-render when imageUrl changes
-              image={card.imageUrl}
-              sx={{
-                width: {
-                  xs: "100%",
-                  md: "50%",
-                },
-              }}
+      <Stack
+        direction={{
+          xs: "column",
+          sm: "row",
+        }}
+      >
+        {card.imageUrl ? (
+          <CardMedia
+            component={"img"}
+            key={card.imageUrl} // Force re-render when imageUrl changes
+            image={card.imageUrl}
+            sx={{
+              width: {
+                xs: "100%",
+                md: "50%",
+              },
+            }}
+          />
+        ) : null}
+        <CardContent>
+          <Box sx={{ p: 2 }}>
+            <AnnotatedCardText
+              text={card.text}
+              wordMeaningExamples={card.wordMeaningExamples}
             />
-          ) : null}
-          <CardContent>
-            <Box sx={{ p: 2 }}>
-              <AnnotatedCardText
-                text={card.text}
-                wordMeaningExamples={card.wordMeaningExamples}
-              />
-            </Box>
-          </CardContent>
-        </Stack>
-      </CardActionArea>
+          </Box>
+        </CardContent>
+      </Stack>
       <CardActions>
         <form action={reviewCardAction}>
           <input type="hidden" name="id" value={nextReviewItem.id} />
