@@ -1,14 +1,15 @@
 "use client";
 import { Delete } from "@mui/icons-material";
-import { Alert, IconButton, List, ListItem, ListItemText } from "@mui/material";
+import { Alert, IconButton, List, ListItem, ListItemText, Typography } from "@mui/material";
+import dayjs from "lib/dayjs";
 import { DefaultResponse, GetApiError } from "lib/response";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import { deleteExample } from "./actions";
 
 type WordMeaningExampleProps = {
   id: number;
   text: string;
-  createDate: string;
+  createdAtMilliTs: number;
 };
 
 export function ExampleList({
@@ -16,7 +17,6 @@ export function ExampleList({
 }: {
   wordMeaningExamples: WordMeaningExampleProps[];
 }) {
-  const { pending } = useFormStatus();
   const [state, action] = useFormState(deleteExample, DefaultResponse());
   const errorMsg = GetApiError(state)?.message;
   return (
@@ -31,7 +31,6 @@ export function ExampleList({
                   edge="end"
                   aria-label="delete"
                   type="submit"
-                  disabled={pending}
                 >
                   <Delete />
                 </IconButton>
@@ -39,7 +38,11 @@ export function ExampleList({
             >
               <ListItemText
                 primary={example.text}
-                secondary={example.createDate}
+                secondary={
+                  <Typography variant="body2" color="text.secondary" suppressHydrationWarning >
+                    {dayjs(example.createdAtMilliTs).format("YYYY/MM/DD")}
+                  </Typography>
+                }
                 sx={{ minWidth: 400 }}
               />
             </ListItem>

@@ -33,10 +33,14 @@ export async function createExample(
   if (cardTextEnd > card.text.length) {
     return { error: { message: "Invalid start and end" } };
   }
-  // check text matches
-  const actualText = card.text.slice(cardTextStart, cardTextEnd);
-  if (text !== actualText) {
-    return { error: { message: "Text doesn't match" } };
+  // text should not prefix or suffix with whitespace
+  if (text.trim() !== text) {
+    return { error: { message: "Text should not prefix or suffix with whitespace" } };
+  }
+  // text should match the range
+  const rangeCutText = card.text.slice(cardTextStart, cardTextEnd);
+  if (text !== rangeCutText) {
+    return { error: { message: `Text='${text}' should match the rangeCutText='${rangeCutText}'` } }
   }
   // create new meaning example
   await prisma.wordMeaningExample.create({

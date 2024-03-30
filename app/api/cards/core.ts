@@ -2,6 +2,8 @@ import { Card, Prisma } from "@prisma/client";
 import dayjs from "lib/dayjs";
 import prisma from "lib/prisma";
 
+export type CardId = number;
+
 export type CreateCardArgs = {
   desk: {
     id: number;

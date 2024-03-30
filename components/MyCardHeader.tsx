@@ -1,4 +1,4 @@
-import { CardHeader, MenuItem, Link as MuiLink, } from "@mui/material";
+import { CardHeader, MenuItem, Link as MuiLink, Typography, } from "@mui/material";
 import { CardActionsMenu } from "components/CardActionsMenu";
 import { CopyCardJsonMenuItem } from "components/CopyCardJsonMenuItem";
 import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
@@ -37,7 +37,11 @@ export function MyCardHeader({ card, redirectOnSuccess }: {
                 <SourceLink source={card.source}></SourceLink>
             ) : null
         }
-        subheader={dayjs(card.createdAt).format("YYYY/MM/DD")} />;
+        subheader={
+            <Typography variant="body2" color="text.secondary" suppressHydrationWarning >
+                {dayjs(card.createdAt).format("YYYY/MM/DD")}
+            </Typography>
+        } />;
 }
 
 function SourceLink({ source }: { source: { name: string; url: string } }) {

@@ -1,56 +1,106 @@
 "use client";
 import { Add } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
-import { Alert, CardActions, CardContent, Typography } from "@mui/material";
+import { Alert, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
+import { CardId } from "app/api/cards/core";
+import { MyCardHeader } from "components/MyCardHeader";
+import { SubmitButton } from "components/SubmitButton";
 import { ClientThemeProvider, TextFontTheme } from "components/Theme";
 import { DefaultResponse, GetApiError } from "lib/response";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import { createExample } from "./actions";
 
 export function CardExamplePicker({
-  cardId,
-  text,
+  card,
+  exampleList,
 }: {
-  cardId: number;
-  text: string;
+  card,
+  exampleList
 }) {
+  const text = card.text;
   const { range, ref } = useTextSelection<HTMLDivElement>();
+  return (
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={8}>
+        <Card>
+          <MyCardHeader card={card} redirectOnSuccess={"/cards"} />
+          <CardContent>
+            <ClientThemeProvider theme={TextFontTheme}>
+              <Typography ref={ref}>{text}</Typography>
+            </ClientThemeProvider>
+          </CardContent>
+          {card.imageUrl ? (
+            <CardMedia
+              component={"img"}
+              image={card.imageUrl}
+            />
+          ) : null}
+        </Card>
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <Card>
+          <CardHeader
+            title="Examples"
+          />
+          <ExamplePicker cardId={card.id} cardText={text} range={range} />
+          {exampleList}
+        </Card >
+      </Grid>
+    </Grid>
+  );
+}
+
+export function ExamplePicker({
+  cardId,
+  cardText,
+  range,
+}: {
+  cardId: CardId;
+  cardText: string;
+  range: FilledRange | null;
+}) {
   const [state, action] = useFormState(createExample, DefaultResponse());
-  const { pending } = useFormStatus();
   const errorMsg = GetApiError(state)?.message;
   const { startOffset, endOffset } = range || { startOffset: 0, endOffset: 0 };
+  const selectedText = cardText.slice(startOffset, endOffset);
+  // trim whitespace and adjust offsets
+  const cardTextStart = startOffset + (
+    selectedText.length - selectedText.trimStart().length
+  );
+  const cardTextEnd = endOffset - (
+    selectedText.length - selectedText.trimEnd().length
+  )
+  const exampleText = selectedText.trim();
   return (
     <form action={action}>
       <CardContent>
-        <ClientThemeProvider theme={TextFontTheme}>
-          <Typography ref={ref}>{text}</Typography>
-        </ClientThemeProvider>
         <input type="hidden" name="cardId" value={cardId} />
-        <input type="hidden" name="cardTextStart" value={startOffset} />
-        <input type="hidden" name="cardTextEnd" value={endOffset} />
-        <input
-          type="hidden"
+        <input type="hidden" name="cardTextStart" value={cardTextStart} />
+        <input type="hidden" name="cardTextEnd" value={cardTextEnd} />
+        <TextField
+          value={exampleText}
           name="text"
-          value={text.slice(startOffset, endOffset)}
+          InputProps={{ readOnly: true, }}
+          variant="standard"
+          fullWidth
         />
         {errorMsg ? <Alert severity="error">{errorMsg}</Alert> : null}
       </CardContent>
       <CardActions>
-        <LoadingButton
+        <SubmitButton
+          loadingPosition="start"
           startIcon={<Add />}
           variant="contained"
-          disabled={!range && !pending}
-          loading={pending}
-          type="submit"
+          disabled={!exampleText}
         >
           Add Example
-        </LoadingButton>
+        </SubmitButton>
       </CardActions>
     </form>
-  );
+  )
 }
+
 function useTextSelection<T extends Node>() {
   // we need a reference to the element wrapping the text in order to determine
   // if the selection is the selection we are after
