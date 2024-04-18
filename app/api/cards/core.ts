@@ -10,7 +10,7 @@ export type CreateCardArgs = {
     userId: string;
   };
   text: string;
-  imageUrl: string | undefined;
+  imageUrl?: string;
   sourceId: number | null;
 };
 
