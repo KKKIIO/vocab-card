@@ -10,14 +10,14 @@ import {
   TextField
 } from "@mui/material";
 import { SubmitButton } from "components/SubmitButton";
-import { DefaultResponse, GetApiError } from "lib/response";
+import { GetApiError, MutResponse } from "lib/response";
 import { useState } from "react";
 import { useFormState } from "react-dom";
 import { createCardAction, createCardFromQuoteUrlAction } from "./actions";
 
 export function AddCardForm() {
-  const [state, action] = useFormState(createCardAction, DefaultResponse());
-  const [quoteUrlState, quoteUrlAction] = useFormState(createCardFromQuoteUrlAction, DefaultResponse());
+  const [state, action] = useFormState(createCardAction, MutResponse());
+  const [quoteUrlState, quoteUrlAction] = useFormState(createCardFromQuoteUrlAction, MutResponse());
   const errorMsg = GetApiError(state)?.message;
   const quoteUrlErrorMsg = GetApiError(quoteUrlState)?.message;
 

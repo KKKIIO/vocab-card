@@ -2,7 +2,7 @@
 import { Delete } from "@mui/icons-material";
 import { Alert, IconButton, List, ListItem, ListItemText, Typography } from "@mui/material";
 import dayjs from "lib/dayjs";
-import { DefaultResponse, GetApiError } from "lib/response";
+import { GetApiError, MutResponse } from "lib/response";
 import { useFormState } from "react-dom";
 import { deleteExample } from "./actions";
 
@@ -17,7 +17,7 @@ export function ExampleList({
 }: {
   wordMeaningExamples: WordMeaningExampleProps[];
 }) {
-  const [state, action] = useFormState(deleteExample, DefaultResponse());
+  const [state, action] = useFormState(deleteExample, MutResponse());
   const errorMsg = GetApiError(state)?.message;
   return (
     <>

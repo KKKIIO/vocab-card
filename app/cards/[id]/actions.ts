@@ -1,6 +1,6 @@
 "use server";
 import prisma from "lib/prisma";
-import { DefaultResponse, MakeValidateError, Response } from "lib/response";
+import { MakeValidateError, MutResponse, Response } from "lib/response";
 import { revalidatePath } from "next/cache";
 import { zfd } from "zod-form-data";
 const createExampleSchema = zfd.formData({
@@ -52,7 +52,7 @@ export async function createExample(
     },
   });
   revalidatePath(`/cards/${cardId}`);
-  return DefaultResponse();
+  return MutResponse();
 }
 
 const deleteExampleSchema = zfd.formData({
@@ -80,5 +80,5 @@ export async function deleteExample(
     where: { id },
   });
   revalidatePath(`/cards/${cardId}`);
-  return DefaultResponse();
+  return MutResponse();
 }

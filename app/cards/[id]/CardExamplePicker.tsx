@@ -1,15 +1,20 @@
 "use client";
-import { Add } from "@mui/icons-material";
-import { Alert, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, TextField, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { Add, QuestionAnswer } from "@mui/icons-material";
+import { Alert, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, IconButton, MenuItem, Stack, TextField, Typography } from "@mui/material";
 
 import { CardId } from "app/api/cards/core";
+import { CardActionsMenu } from "components/CardActionsMenu";
+import { CopyCardJsonMenuItem } from "components/CopyCardJsonMenuItem";
+import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
 import { MyCardHeader } from "components/MyCardHeader";
 import { SubmitButton } from "components/SubmitButton";
 import { ClientThemeProvider, TextFontTheme } from "components/Theme";
-import { DefaultResponse, GetApiError } from "lib/response";
+import { GetApiError, MutResponse } from "lib/response";
+import Link from "next/link";
 import { useFormState } from "react-dom";
+import { FilledRange, useTextSelection } from "../../../components/useTextSelection";
 import { createExample } from "./actions";
+
 
 export function CardExamplePicker({
   card,
@@ -24,7 +29,27 @@ export function CardExamplePicker({
     <Grid container spacing={2}>
       <Grid item xs={12} md={8}>
         <Card>
-          <MyCardHeader card={card} redirectOnSuccess={"/cards"} />
+          <MyCardHeader card={card} action={
+            <Stack direction="row">
+              <IconButton
+                component={Link}
+                href={`/cards/${card.id}/ask`}
+              >
+                <QuestionAnswer />
+              </IconButton>
+              <CardActionsMenu>
+                <MenuItem
+                  key={"edit"}
+                  component={Link}
+                  href={`/cards/${card.id}/edit`}
+                >
+                  Edit
+                </MenuItem>
+                <DeleteCardMenuItem cardId={card.id} redirectOnSuccess={"/cards"} />
+                <CopyCardJsonMenuItem card={card} />
+              </CardActionsMenu>
+            </Stack>
+          } />
           <CardContent>
             <ClientThemeProvider theme={TextFontTheme}>
               <Typography ref={ref}>{text}</Typography>
@@ -60,7 +85,7 @@ export function ExamplePicker({
   cardText: string;
   range: FilledRange | null;
 }) {
-  const [state, action] = useFormState(createExample, DefaultResponse());
+  const [state, action] = useFormState(createExample, MutResponse());
   const errorMsg = GetApiError(state)?.message;
   const { startOffset, endOffset } = range || { startOffset: 0, endOffset: 0 };
   const selectedText = cardText.slice(startOffset, endOffset);
@@ -101,52 +126,4 @@ export function ExamplePicker({
   )
 }
 
-function useTextSelection<T extends Node>() {
-  // we need a reference to the element wrapping the text in order to determine
-  // if the selection is the selection we are after
-  const ref = useRef<T>(null);
 
-  // we store info about the current Range here
-  const [range, setRange] = useState<FilledRange | null>(null);
-
-  // In this effect we're registering for the documents "selectionchange" event
-  useEffect(() => {
-    function handleChange() {
-      // get selection information from the browser
-      const selection = window.getSelection();
-
-      // we only want to proceed when we have a valid selection
-      if (
-        !selection ||
-        selection.isCollapsed ||
-        !ref.current ||
-        // and the selection is in the ref.current element
-        !ref.current.contains(selection.anchorNode) ||
-        !ref.current.contains(selection.focusNode)
-      ) {
-        setRange(null);
-        return;
-      }
-
-      const range = selection.getRangeAt(0)
-      setRange({
-        startContainer: range.startContainer,
-        startOffset: range.startOffset,
-        endContainer: range.endContainer,
-        endOffset: range.endOffset,
-      });
-    }
-
-    document.addEventListener("selectionchange", handleChange);
-    return () => document.removeEventListener("selectionchange", handleChange);
-  }, []);
-
-  return { range, ref };
-}
-
-interface FilledRange {
-  startContainer: Node;
-  startOffset: number;
-  endContainer: Node;
-  endOffset: number;
-}

@@ -10,12 +10,12 @@ import {
   Typography,
 } from "@mui/material";
 import { SubmitButton } from "components/SubmitButton";
-import { DefaultResponse, GetApiError } from "lib/response";
+import { GetApiError, MutResponse } from "lib/response";
 import { useFormState } from "react-dom";
 import { createSourceAction } from "./actions";
 
 export function AddSourceForm() {
-  const [state, action] = useFormState(createSourceAction, DefaultResponse());
+  const [state, action] = useFormState(createSourceAction, MutResponse());
   const errorMsg = GetApiError(state)?.message;
   return (
     <form action={action}>

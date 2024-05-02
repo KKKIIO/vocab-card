@@ -4,6 +4,7 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
+  MenuItem,
   SpeedDial,
   SpeedDialAction,
   SpeedDialIcon,
@@ -12,6 +13,9 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { requireDefaultDesk } from "app/desks/query";
+import { CardActionsMenu } from "components/CardActionsMenu";
+import { CopyCardJsonMenuItem } from "components/CopyCardJsonMenuItem";
+import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
 import { MyCardHeader } from "components/MyCardHeader";
 import { MyPagination } from "components/MyPagination";
 import { TextFontTheme } from "components/Theme";
@@ -56,7 +60,19 @@ export default async function Page({
         {cards.map((card) => {
           return (
             <Card key={card.id}>
-              <MyCardHeader card={card} />
+              <MyCardHeader card={card} action={
+                <CardActionsMenu>
+                  <MenuItem
+                    key={"edit"}
+                    component={Link}
+                    href={`/cards/${card.id}/edit`}
+                  >
+                    Edit
+                  </MenuItem>
+                  <DeleteCardMenuItem cardId={card.id} redirectOnSuccess={"/cards"} />
+                  <CopyCardJsonMenuItem card={card} />
+                </CardActionsMenu>
+              } />
               <CardActionArea component={Link} href={`/cards/${card.id}`}>
                 <Stack
                   direction={{

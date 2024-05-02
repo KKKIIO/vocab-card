@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-export interface SuccessResponse<T = any> {
+export interface SuccessResponse<T> {
   data: T;
 }
 export interface ApiError {
@@ -9,17 +9,17 @@ export interface ApiError {
 export interface ErrorResponse {
   error: ApiError;
 }
-export type Response<T = any> = SuccessResponse<T> | ErrorResponse;
+export type Response<T = undefined> = SuccessResponse<T> | ErrorResponse;
 
-export function DefaultResponse(): Response {
-  return { data: null };
+export function MutResponse(): Response {
+  return { data: undefined };
 }
 
-export function GetApiError<T>(response: Response<T>): ApiError | null {
+export function GetApiError<T>(response: {} | { error: ApiError }): ApiError | undefined {
   if ("error" in response) {
     return response.error;
   }
-  return null;
+  return undefined;
 }
 
 export function MakeValidateError<T>(e: ZodError<T>): ApiError {

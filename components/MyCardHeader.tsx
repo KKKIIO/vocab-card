@@ -1,12 +1,9 @@
-import { CardHeader, MenuItem, Link as MuiLink, Typography, } from "@mui/material";
-import { CardActionsMenu } from "components/CardActionsMenu";
-import { CopyCardJsonMenuItem } from "components/CopyCardJsonMenuItem";
-import { DeleteCardMenuItem } from "components/DeleteCardMenuItem";
+import { CardHeader, Link as MuiLink, Typography } from "@mui/material";
 import { SourceAvatar } from "components/SourceAvatar";
 import dayjs from "lib/dayjs";
-import Link from "next/link";
+import { ReactNode } from "react";
 
-export function MyCardHeader({ card, redirectOnSuccess }: {
+export function MyCardHeader({ card, action }: {
     card: {
         id: number;
         text: string;
@@ -17,21 +14,11 @@ export function MyCardHeader({ card, redirectOnSuccess }: {
             url: string;
         } | null;
     };
-    redirectOnSuccess?: string
+    action?: JSX.Element & ReactNode;
 }) {
     return <CardHeader
         avatar={<SourceAvatar source={card.source} />}
-        action={<CardActionsMenu>
-            <MenuItem
-                key={"edit"}
-                component={Link}
-                href={`/cards/${card.id}/edit`}
-            >
-                Edit
-            </MenuItem>
-            <DeleteCardMenuItem cardId={card.id} redirectOnSuccess={redirectOnSuccess} />
-            <CopyCardJsonMenuItem card={card} />
-        </CardActionsMenu>}
+        action={action}
         title={
             card.source ? (
                 <SourceLink source={card.source}></SourceLink>

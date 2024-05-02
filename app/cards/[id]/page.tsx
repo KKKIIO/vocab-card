@@ -1,7 +1,6 @@
 import prisma from "lib/prisma";
 import { notFound } from "next/navigation";
 
-import dayjs from "lib/dayjs";
 import { CardExamplePicker } from "./CardExamplePicker";
 import { ExampleList } from "./ExampleList";
 
@@ -22,14 +21,6 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!card) {
     return notFound();
   }
-  await prisma.card.update({
-    where: {
-      id: card.id,
-    },
-    data: {
-      lastReviewedAt: dayjs().toDate(),
-    },
-  });
 
   return (
     <CardExamplePicker

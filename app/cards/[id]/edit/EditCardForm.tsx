@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { SubmitButton } from "components/SubmitButton";
-import { DefaultResponse, GetApiError } from "lib/response";
+import { GetApiError, MutResponse } from "lib/response";
 import { useFormState } from "react-dom";
 import { editCard } from "./actions";
 
@@ -27,7 +27,7 @@ export function EditCardForm({
     imageUrl: string;
   };
 }) {
-  const [state, action] = useFormState(editCard, DefaultResponse());
+  const [state, action] = useFormState(editCard, MutResponse());
   const errorMsg = GetApiError(state)?.message;
   return (
     <form action={action}>
