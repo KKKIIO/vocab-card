@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { requireDefaultDesk } from "../../desks/query";
-import { upsertSource } from "../sources/core";
+import { createSourceIfNotExists } from "../sources/core";
 import { createCard } from "./core";
 
 const createSchema = z.object({
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
   const { text, imageUrl, source } = createSchema.parse(body);
   const deskId = desk.id;
   const sourceId = source
-    ? (await upsertSource({ deskId, ...source, })).id
+    ? (await createSourceIfNotExists({ deskId, ...source, })).id
     : null;
   const card = await createCard({ text, imageUrl, sourceId, desk: desk });
   revalidatePath("/cards");

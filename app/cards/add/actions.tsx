@@ -1,6 +1,6 @@
 "use server";
 import { createCard } from "app/api/cards/core";
-import { upsertSource } from "app/api/sources/core";
+import { createSourceIfNotExists } from "app/api/sources/core";
 import { requireDefaultDesk } from "app/desks/query";
 import * as cheerio from 'cheerio';
 import { authenticatedUser } from "lib/auth";
@@ -42,7 +42,7 @@ export async function createCardAction(
 
   const deskId = desk.id;
   const sourceId = source
-    ? (await upsertSource({ deskId, ...source, })).id
+    ? (await createSourceIfNotExists({ deskId, ...source, })).id
     : null;
   const card = await createCard({
     desk,
@@ -87,7 +87,7 @@ export async function createCardFromQuoteUrlAction(
 
   const deskId = desk.id;
   const sourceId = source
-    ? (await upsertSource({ deskId, ...source, })).id
+    ? (await createSourceIfNotExists({ deskId, ...source, })).id
     : null;
   const card = await createCard({
     desk,

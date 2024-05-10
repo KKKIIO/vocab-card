@@ -24,10 +24,7 @@ export async function createSource({
   })
 }
 
-export async function upsertSource({
-  deskId,
-  name, url,
-}: CreateSourceArgs) {
+export async function createSourceIfNotExists({ deskId, name, url, }: CreateSourceArgs) {
   url = cleanUpUrl(url);
 
   return await prisma.source.upsert({
