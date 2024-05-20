@@ -31,8 +31,8 @@ export function AddCardForm() {
     <Paper>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="add card forms">
-          <Tab label="Add Card" />
-          <Tab label="Add Card from Quote URL" />
+          <Tab label="Manual" />
+          <Tab label="From Quote URL" />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>

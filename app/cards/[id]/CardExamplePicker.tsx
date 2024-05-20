@@ -1,6 +1,6 @@
 "use client";
-import { Add, QuestionAnswer } from "@mui/icons-material";
-import { Alert, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, IconButton, MenuItem, Stack, TextField, Typography } from "@mui/material";
+import { Add, Edit, QuestionAnswer } from "@mui/icons-material";
+import { Alert, Card, CardActions, CardContent, CardHeader, CardMedia, Grid, IconButton, Stack, TextField, Typography } from "@mui/material";
 
 import { CardId } from "app/api/cards/core";
 import { CardActionsMenu } from "components/CardActionsMenu";
@@ -37,14 +37,13 @@ export function CardExamplePicker({
               >
                 <QuestionAnswer />
               </IconButton>
+              <IconButton
+                component={Link}
+                href={`/cards/${card.id}/edit`}
+              >
+                <Edit />
+              </IconButton>
               <CardActionsMenu>
-                <MenuItem
-                  key={"edit"}
-                  component={Link}
-                  href={`/cards/${card.id}/edit`}
-                >
-                  Edit
-                </MenuItem>
                 <DeleteCardMenuItem cardId={card.id} redirectOnSuccess={"/cards"} />
                 <CopyCardJsonMenuItem card={card} />
               </CardActionsMenu>

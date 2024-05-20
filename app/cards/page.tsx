@@ -1,15 +1,13 @@
-import { Style } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
 import {
+  Button,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
   MenuItem,
-  SpeedDial,
-  SpeedDialAction,
-  SpeedDialIcon,
   Stack,
-  Typography,
+  Typography
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { requireDefaultDesk } from "app/desks/query";
@@ -55,7 +53,15 @@ export default async function Page({
   const pageCount = Math.ceil(cardCount / pageSize);
 
   return (
-    <>
+    <Stack spacing={2}>
+      <Stack direction="row" justifyContent="flex-end">
+        <Button
+          component={Link}
+          href="/cards/add"
+          variant="contained" startIcon={<Add />}>
+          Add
+        </Button>
+      </Stack>
       <Stack spacing={2}>
         {cards.map((card) => {
           return (
@@ -111,28 +117,7 @@ export default async function Page({
         })}
         <MyPagination path={"/cards"} count={pageCount} defaultPage={page} />
       </Stack>
-      <SpeedDial
-        ariaLabel="Actions"
-        sx={{ position: "fixed", bottom: 64, right: 64 }}
-        icon={<SpeedDialIcon />}
-      >
-        <SpeedDialAction
-          icon={
-            // SpeedDialAction with link
-            // see https://stackoverflow.com/questions/60522401/speeddialaction-with-react-router-dom-link#comment111619674_60525523
-            <Link
-              href="/cards/add"
-              style={{
-                display: "flex",
-              }}
-            >
-              <Style color="primary" />
-            </Link>
-          }
-          tooltipTitle="Add Card"
-        />
-      </SpeedDial>
-    </>
+    </Stack>
   );
 }
 
