@@ -14,7 +14,7 @@ const editCardSchema = zfd.formData({
   sourceName: zfd.text(z.string().optional()),
   sourceUrl: zfd.text(z.string().url().optional()),
   text: zfd.text(),
-  imageUrl: zfd.text(z.string().url().optional()),
+  imageUrl: z.union([z.string().url(), z.literal("")]),
 });
 
 export async function editCard(
@@ -41,13 +41,13 @@ export async function editCard(
 
   const deskId = desk.id;
   const sourceId = source
-    ? (await createSourceIfNotExists({ deskId, ...source, })).id
+    ? (await createSourceIfNotExists({ deskId, ...source })).id
     : null;
   const card = await prisma.card.update({
     data: {
       deskId,
       text,
-      imageUrl: imageUrl || "",
+      imageUrl,
       sourceId,
     },
     where: { id, deskId },
